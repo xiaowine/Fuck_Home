@@ -3,6 +3,15 @@ name: Android CI
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      run:
+        description: ""
+        required: true
+        default: run
+        type: choice
+        options:
+          - run
 
 
 jobs:
