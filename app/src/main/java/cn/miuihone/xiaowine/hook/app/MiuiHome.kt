@@ -29,10 +29,11 @@ object MiuiHome : BaseHook() {
             }
         }
     }
-    private fun getMemory():String{
+
+    private fun getMemory(): String {
         val am: ActivityManager = appContext.getSystemService(ACTIVITY_SERVICE) as ActivityManager
         val outInfo: ActivityManager.MemoryInfo = ActivityManager.MemoryInfo()
         am.getMemoryInfo(outInfo)
-       return Formatter.formatFileSize(appContext, outInfo.availMem)
+        return Formatter.formatFileSize(appContext, outInfo.availMem)
     }
 }
