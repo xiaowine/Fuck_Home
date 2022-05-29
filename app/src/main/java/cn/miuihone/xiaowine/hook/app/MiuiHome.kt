@@ -28,7 +28,7 @@ object MiuiHome : BaseHook() {
         catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "refreshMemoryInfo" }.hookAfter {
                 LogUtils.i(isInit)
-                if (isInit) {
+                if (!isInit) {
                     mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
                     LogUtils.i(mTxtMemoryViewGroup.childCount)
                     for (i in 0 until mTxtMemoryViewGroup.childCount) {
