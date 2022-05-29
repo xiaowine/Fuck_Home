@@ -23,7 +23,9 @@ import com.github.kyuubiran.ezxhelper.utils.hookAfter
 object MiuiHome : BaseHook() {
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
-    private lateinit var memoryView: TextView
+    private lateinit var MemoryView: TextView
+    private lateinit var StorageView: TextView
+    private lateinit var ZarmView: TextView
     @SuppressLint("SetTextI18n") override fun init() {
         catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "refreshMemoryInfo" }.hookAfter {
@@ -38,9 +40,7 @@ object MiuiHome : BaseHook() {
                     initView()
                     isInit=true
                 }
-                LogUtils.i(memoryView.text)
                 refreshDate()
-                LogUtils.i(memoryView.text)
             }
         }
     }
@@ -50,13 +50,14 @@ object MiuiHome : BaseHook() {
             gravity = Gravity.START
             orientation = LinearLayout.VERTICAL
         }
-        memoryView = TextView(appContext).apply {
+        MemoryView = TextView(appContext).apply {
             setTextColor(mTxtMemoryInfo1.textColors)
-            textSize = mTxtMemoryInfo1.textSize
-            typeface = mTxtMemoryInfo1.typeface
+            textSize = 14f
         }
-        LogUtils.i(memoryView.text)
-        memoryLayout.addView(memoryView)
+        StorageView= MemoryView
+        ZarmView= MemoryView
+        LogUtils.i(MemoryView.text)
+        memoryLayout.addView(MemoryView)
         mTxtMemoryViewGroup.addView(memoryLayout)
     }
 
@@ -64,6 +65,8 @@ object MiuiHome : BaseHook() {
         val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
         val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
         val swapInfo: MemoryUtils = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-        memoryView.text = "可用：${memoryInfo.availMem.formatSize()} | 总共：${memoryInfo.totalMem.formatSize()}\n" + "可用：${storageInfo.availMem.formatSize()} | 总共：${storageInfo.totalMem.formatSize()}\n" + "可用：${swapInfo.availMem.formatSize()} | 总共：${swapInfo.totalMem.formatSize()}\n"
+        MemoryView.text = "可用：${memoryInfo.availMem.formatSize()} | 总共：${memoryInfo.totalMem.formatSize()}\n" + "可用：${storageInfo.availMem.formatSize()} | 总共：${storageInfo.totalMem.formatSize()}\n" + "可用：${swapInfo.availMem.formatSize()} | 总共：${swapInfo.totalMem.formatSize()}\n"
+        StorageView.text = "可用：${memoryInfo.availMem.formatSize()} | 总共：${memoryInfo.totalMem.formatSize()}\n" + "可用：${storageInfo.availMem.formatSize()} | 总共：${storageInfo.totalMem.formatSize()}\n" + "可用：${swapInfo.availMem.formatSize()} | 总共：${swapInfo.totalMem.formatSize()}\n"
+        ZarmView.text = "可用：${memoryInfo.availMem.formatSize()} | 总共：${memoryInfo.totalMem.formatSize()}\n" + "可用：${storageInfo.availMem.formatSize()} | 总共：${storageInfo.totalMem.formatSize()}\n" + "可用：${swapInfo.availMem.formatSize()} | 总共：${swapInfo.totalMem.formatSize()}\n"
     }
 }
