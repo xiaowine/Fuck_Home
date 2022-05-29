@@ -28,6 +28,7 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit /* Optional */ {
         }
 
     }
+
     // Optional
     override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
         EzXHelperInit.initZygote(startupParam)
@@ -38,6 +39,7 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit /* Optional */ {
             runCatching {
                 if (it.isInit) return@forEach
                 it.init()
+                it.isInit = true
                 LogUtils.i("Inited hook: ${it.javaClass.simpleName}")
             }.logexIfThrow("Failed init hook: ${it.javaClass.simpleName}")
         }

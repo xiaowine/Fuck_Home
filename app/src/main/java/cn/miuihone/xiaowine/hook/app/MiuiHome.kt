@@ -22,11 +22,13 @@ import com.github.kyuubiran.ezxhelper.utils.putObject
 
 @SuppressLint("StaticFieldLeak")
 object MiuiHome : BaseHook() {
+    private var mInit: Boolean = false
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
     private lateinit var MemoryView: TextView
     private lateinit var StorageView: TextView
     private lateinit var ZarmView: TextView
+
     @SuppressLint("SetTextI18n") override fun init() {
         catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onFinishInflate" }.hookAfter {
@@ -34,7 +36,7 @@ object MiuiHome : BaseHook() {
             }
 
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "refreshMemoryInfo" }.hookAfter {
-                if (!isInit) {
+                if (!mInit) {
                     mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
                     LogUtils.i(mTxtMemoryViewGroup.childCount)
                     for (i in 0 until mTxtMemoryViewGroup.childCount) {
@@ -43,7 +45,7 @@ object MiuiHome : BaseHook() {
                     }
                     mTxtMemoryInfo1 = it.thisObject.getObjectAs("mTxtMemoryInfo1")
                     initView()
-                    isInit = true
+                    mInit = true
                 }
                 refreshDate()
             }
