@@ -10,7 +10,7 @@ plugins {
 android {
     compileSdk = 32
 
-    val buildTime=System.currentTimeMillis()
+    val buildTime = System.currentTimeMillis()
     defaultConfig {
         applicationId = "cn.miuihone.xiaowine"
         minSdk = 26
@@ -61,6 +61,7 @@ android {
 dependencies {
     implementation("com.github.kyuubiran:EzXHelper:0.9.2")
     compileOnly("de.robv.android.xposed:api:82")
+//    implementation(files("libs/helplib.jar"))
 //    implementation(project(":blockmiui"))
 //    implementation(project(":xtoast"))
 }
