@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import cn.miuihone.xiaowine.hook.BaseHook
-import cn.miuihone.xiaowine.utils.LogUtils
 import cn.miuihone.xiaowine.utils.MemoryUtils
 import cn.miuihone.xiaowine.utils.Utils.catchNoClass
 import cn.miuihone.xiaowine.utils.Utils.formatSize
@@ -35,10 +34,8 @@ object MiuiHome : BaseHook() {
                 if (!mInit) {
                     mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
                     it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
-                    LogUtils.i(mTxtMemoryViewGroup.childCount)
                     for (i in 0 until mTxtMemoryViewGroup.childCount) {
                         mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
-                        LogUtils.i(i)
                     }
                     mTxtMemoryInfo1 = it.thisObject.getObjectAs("mTxtMemoryInfo1")
                     initView()
@@ -51,21 +48,12 @@ object MiuiHome : BaseHook() {
 
     private fun initView() {
         val memoryLayout = LinearLayout(appContext).apply {
-            gravity = Gravity.START
+            gravity = Gravity.CENTER
             orientation = LinearLayout.VERTICAL
         }
-        MemoryView = TextView(appContext).apply {
-            setTextColor(mTxtMemoryInfo1.textColors)
-            textSize = 12f
-        }
-        StorageView = TextView(appContext).apply {
-            setTextColor(mTxtMemoryInfo1.textColors)
-            textSize = 12f
-        }
-        ZarmView = TextView(appContext).apply {
-            setTextColor(mTxtMemoryInfo1.textColors)
-            textSize = 12f
-        }
+        MemoryView = newTextView()
+        StorageView = newTextView()
+        ZarmView = newTextView()
         memoryLayout.addView(MemoryView)
         memoryLayout.addView(ZarmView)
         memoryLayout.addView(StorageView)
@@ -76,8 +64,13 @@ object MiuiHome : BaseHook() {
         val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
         val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
         val swapInfo: MemoryUtils = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-        MemoryView.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t| 总共：\t${memoryInfo.totalMem.formatSize()}"
-        ZarmView.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t| 总共：\t${swapInfo.totalMem.formatSize()}"
-        StorageView.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t| 总共：\t${storageInfo.totalMem.formatSize()}"
+        MemoryView.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t| \t总共：\t${memoryInfo.totalMem.formatSize()}"
+        ZarmView.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t|\t总共：${swapInfo.totalMem.formatSize()}"
+        StorageView.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t|\t总共：\t${storageInfo.totalMem.formatSize()}"
+    }
+
+    private fun newTextView(): TextView = TextView(appContext).apply {
+        setTextColor(mTxtMemoryInfo1.textColors)
+        textSize = 12f
     }
 }

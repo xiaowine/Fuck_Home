@@ -15,18 +15,25 @@ private const val PACKAGE_MIUI_HOME = "com.miui.home"
 
 
 class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit /* Optional */ {
+    private lateinit var lp: XC_LoadPackage.LoadPackageParam
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
+        lp = lpparam
         when (lpparam.packageName) {
-            PACKAGE_MIUI_HOME -> Application::class.java.hookBeforeMethod("attach", Context::class.java) {
-                EzXHelperInit.apply {
-                    initHandleLoadPackage(lpparam)
-                    initAppContext(it.args[0] as Context)
-                    initHooks(MiuiHome)
-                }
-            }
+            PACKAGE_MIUI_HOME -> getConeText(MiuiHome)
+            
             else -> return
         }
 
+    }
+
+    private fun getConeText(hook: BaseHook) {
+        Application::class.java.hookBeforeMethod("attach", Context::class.java) {
+            EzXHelperInit.apply {
+                initHandleLoadPackage(lp)
+                initAppContext(it.args[0] as Context)
+                initHooks(hook)
+            }
+        }
     }
 
     // Optional
