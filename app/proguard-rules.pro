@@ -20,9 +20,12 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-optimizationpasses 5
 
--keep public class cn.inksay.miuihome.hook.MainHook
 
--keep class cn.miuihome.xiaowine.hook.MainHook {
+
+-keep public class cn.miuihone.xiaowine.hook.MainHook
+
+-keep class cn.miuihone.xiaowine.hook.MainHook {
      <init>();
 }

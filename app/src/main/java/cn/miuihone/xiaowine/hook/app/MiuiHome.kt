@@ -36,6 +36,7 @@ object MiuiHome : BaseHook() {
                     }
                     mTxtMemoryInfo1 = it.thisObject.getObjectAs("mTxtMemoryInfo1")
                     initView()
+                    isInit=true
                 }
                 LogUtils.i(memoryView.text)
                 refreshDate()

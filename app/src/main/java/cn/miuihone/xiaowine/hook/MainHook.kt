@@ -38,7 +38,6 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit /* Optional */ {
             runCatching {
                 if (it.isInit) return@forEach
                 it.init()
-                it.isInit = true
                 LogUtils.i("Inited hook: ${it.javaClass.simpleName}")
             }.logexIfThrow("Failed init hook: ${it.javaClass.simpleName}")
         }
