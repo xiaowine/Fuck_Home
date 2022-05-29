@@ -31,13 +31,10 @@ object MiuiHome : BaseHook() {
 
     @SuppressLint("SetTextI18n") override fun init() {
         catchNoClass {
-            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onFinishInflate" }.hookAfter {
-                it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
-            }
-
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "refreshMemoryInfo" }.hookAfter {
                 if (!mInit) {
                     mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
+                    it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
                     LogUtils.i(mTxtMemoryViewGroup.childCount)
                     for (i in 0 until mTxtMemoryViewGroup.childCount) {
                         mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
@@ -70,8 +67,8 @@ object MiuiHome : BaseHook() {
             textSize = 12f
         }
         memoryLayout.addView(MemoryView)
-        memoryLayout.addView(StorageView)
         memoryLayout.addView(ZarmView)
+        memoryLayout.addView(StorageView)
         mTxtMemoryViewGroup.addView(memoryLayout)
     }
 
@@ -80,7 +77,7 @@ object MiuiHome : BaseHook() {
         val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
         val swapInfo: MemoryUtils = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
         MemoryView.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t| 总共：\t${memoryInfo.totalMem.formatSize()}"
-        StorageView.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t| 总共：\t${storageInfo.totalMem.formatSize()}"
         ZarmView.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t| 总共：\t${swapInfo.totalMem.formatSize()}"
+        StorageView.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t| 总共：\t${storageInfo.totalMem.formatSize()}"
     }
 }
