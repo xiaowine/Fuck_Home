@@ -17,6 +17,7 @@ import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
+import com.github.kyuubiran.ezxhelper.utils.putObject
 
 
 @SuppressLint("StaticFieldLeak")
@@ -28,17 +29,21 @@ object MiuiHome : BaseHook() {
     private lateinit var ZarmView: TextView
     @SuppressLint("SetTextI18n") override fun init() {
         catchNoClass {
+            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onFinishInflate" }.hookAfter {
+                it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
+            }
+
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "refreshMemoryInfo" }.hookAfter {
-                LogUtils.i(isInit)
                 if (!isInit) {
                     mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
                     LogUtils.i(mTxtMemoryViewGroup.childCount)
                     for (i in 0 until mTxtMemoryViewGroup.childCount) {
                         mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
+                        LogUtils.i(i)
                     }
                     mTxtMemoryInfo1 = it.thisObject.getObjectAs("mTxtMemoryInfo1")
                     initView()
-                    isInit=true
+                    isInit = true
                 }
                 refreshDate()
             }
@@ -52,12 +57,19 @@ object MiuiHome : BaseHook() {
         }
         MemoryView = TextView(appContext).apply {
             setTextColor(mTxtMemoryInfo1.textColors)
-            textSize = 14f
+            textSize = 12f
         }
-        StorageView= MemoryView
-        ZarmView= MemoryView
-        LogUtils.i(MemoryView.text)
+        StorageView = TextView(appContext).apply {
+            setTextColor(mTxtMemoryInfo1.textColors)
+            textSize = 12f
+        }
+        ZarmView = TextView(appContext).apply {
+            setTextColor(mTxtMemoryInfo1.textColors)
+            textSize = 12f
+        }
         memoryLayout.addView(MemoryView)
+        memoryLayout.addView(StorageView)
+        memoryLayout.addView(ZarmView)
         mTxtMemoryViewGroup.addView(memoryLayout)
     }
 
@@ -65,8 +77,8 @@ object MiuiHome : BaseHook() {
         val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
         val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
         val swapInfo: MemoryUtils = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-        MemoryView.text = "可用：${memoryInfo.availMem.formatSize()} | 总共：${memoryInfo.totalMem.formatSize()}\n" + "可用：${storageInfo.availMem.formatSize()} | 总共：${storageInfo.totalMem.formatSize()}\n" + "可用：${swapInfo.availMem.formatSize()} | 总共：${swapInfo.totalMem.formatSize()}\n"
-        StorageView.text = "可用：${memoryInfo.availMem.formatSize()} | 总共：${memoryInfo.totalMem.formatSize()}\n" + "可用：${storageInfo.availMem.formatSize()} | 总共：${storageInfo.totalMem.formatSize()}\n" + "可用：${swapInfo.availMem.formatSize()} | 总共：${swapInfo.totalMem.formatSize()}\n"
-        ZarmView.text = "可用：${memoryInfo.availMem.formatSize()} | 总共：${memoryInfo.totalMem.formatSize()}\n" + "可用：${storageInfo.availMem.formatSize()} | 总共：${storageInfo.totalMem.formatSize()}\n" + "可用：${swapInfo.availMem.formatSize()} | 总共：${swapInfo.totalMem.formatSize()}\n"
+        MemoryView.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t| 总共：\t${memoryInfo.totalMem.formatSize()}"
+        StorageView.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t| 总共：\t${storageInfo.totalMem.formatSize()}"
+        ZarmView.text = "虚拟内存可用：\t${swapInfo.availMem.formatSize()} \t| 总共：\t${swapInfo.totalMem.formatSize()}"
     }
 }
