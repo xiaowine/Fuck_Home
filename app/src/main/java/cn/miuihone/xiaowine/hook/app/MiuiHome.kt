@@ -81,6 +81,6 @@ object MiuiHome : BaseHook() {
         val swapInfo: MemoryUtils = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
         MemoryView.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t| 总共：\t${memoryInfo.totalMem.formatSize()}"
         StorageView.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t| 总共：\t${storageInfo.totalMem.formatSize()}"
-        ZarmView.text = "虚拟内存可用：\t${swapInfo.availMem.formatSize()} \t| 总共：\t${swapInfo.totalMem.formatSize()}"
+        ZarmView.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t| 总共：\t${swapInfo.totalMem.formatSize()}"
     }
 }
