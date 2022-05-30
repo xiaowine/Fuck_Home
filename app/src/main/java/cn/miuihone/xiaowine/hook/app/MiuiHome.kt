@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import cn.miuihone.xiaowine.hook.BaseHook
+import cn.miuihone.xiaowine.utils.LogUtils
 import cn.miuihone.xiaowine.utils.MemoryUtils
 import cn.miuihone.xiaowine.utils.Utils.catchNoClass
 import cn.miuihone.xiaowine.utils.Utils.formatSize
@@ -23,11 +24,7 @@ import java.util.HashMap
 
 @SuppressLint("StaticFieldLeak")
 object MiuiHome : BaseHook() {
-    private var TextViewMaps = HashMap<String, TextView>().apply {
-        put("MemoryView", newTextView())
-        put("StorageView", newTextView())
-        put("ZarmView", newTextView())
-    }
+    private var TextViewMaps = HashMap<String, TextView>()
     private var mInit: Boolean = false
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
@@ -57,6 +54,11 @@ object MiuiHome : BaseHook() {
     }
 
     private fun initView() {
+        TextViewMaps.apply {
+            put("MemoryView", newTextView())
+            put("StorageView", newTextView())
+            put("ZarmView", newTextView())
+        }
         val memoryLayout = LinearLayout(appContext).apply {
             gravity = Gravity.CENTER
             orientation = LinearLayout.VERTICAL
