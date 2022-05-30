@@ -9,6 +9,7 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import kotlin.math.roundToInt
 
 /**
  * @author xiaow
@@ -32,7 +33,7 @@ class MemoryUtils {
     /**
      * @return 可用百分比
      */
-    val percentValue = 0
+    var percentValue: Int = 0
 
     var threshold: Long = 0
 
@@ -50,6 +51,7 @@ class MemoryUtils {
         usedMem = totalMem - availMem
         threshold = memoryInfo.threshold
         lowMemory = memoryInfo.lowMemory
+        percentValue = getPercent(availMem.toDouble(), totalMem.toDouble())
         return this
     }
 
@@ -63,6 +65,7 @@ class MemoryUtils {
                 totalMem = blockSize * blockCount
                 availMem = blockSize * availCount
                 usedMem = blockSize * (blockCount - availCount)
+                percentValue = getPercent(availMem.toDouble(), totalMem.toDouble())
             }
         }
         return this
@@ -72,6 +75,7 @@ class MemoryUtils {
         totalMem = getOthersMemory(totalMemKey)
         availMem = getOthersMemory(availMemKey)
         usedMem = totalMem - availMem
+        percentValue = getPercent(availMem.toDouble(), totalMem.toDouble())
         return this
     }
 
@@ -80,6 +84,7 @@ class MemoryUtils {
             totalMem = getOthersMemory(totalMemKey)
             usedMem = getOthersMemory(memKey)
             availMem = totalMem - usedMem
+            percentValue = getPercent(availMem.toDouble(), totalMem.toDouble())
         } else {
             getPartitionInfo(totalMemKey, memKey)
         }
@@ -90,6 +95,7 @@ class MemoryUtils {
         totalMem = getOthersMemory(totalMemKey)
         availMem = getOthersMemory(availMemKey)
         usedMem = getOthersMemory(usedMemKey)
+        percentValue = getPercent(availMem.toDouble(), totalMem.toDouble())
         return this
     }
 
@@ -116,6 +122,11 @@ class MemoryUtils {
         return 0
         //return Formatter.formatFileSize(getBaseContext(), initial_memory);
     } // Byte转换为KB或者MB，内存大小规格化	}
+
+    private fun getPercent(value1: Double, value2: Double): Int {
+        // return DecimalFormat("00").format(value1 / value2).toInt()
+        return ((value1 / value2)*100).roundToInt()
+    }
 
     companion object {
         @Throws(IOException::class) fun toString(`is`: InputStream): String {

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import cn.miuihone.xiaowine.hook.BaseHook
-import cn.miuihone.xiaowine.utils.LogUtils
 import cn.miuihone.xiaowine.utils.MemoryUtils
 import cn.miuihone.xiaowine.utils.Utils.catchNoClass
 import cn.miuihone.xiaowine.utils.Utils.formatSize
@@ -19,12 +18,11 @@ import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.putObject
 import de.robv.android.xposed.XC_MethodHook
-import java.util.HashMap
 
 
 @SuppressLint("StaticFieldLeak")
 object MiuiHome : BaseHook() {
-    private var TextViewMaps = HashMap<String, TextView>()
+    private var TextViewMaps = LinkedHashMap<String, TextView>()
     private var mInit: Boolean = false
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
@@ -48,16 +46,16 @@ object MiuiHome : BaseHook() {
         val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
         val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
         val swapInfo: MemoryUtils = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-        TextViewMaps["MemoryView"]!!.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t| \t总共：\t${memoryInfo.totalMem.formatSize()}"
-        TextViewMaps["ZarmView"]!!.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t|\t总共：${swapInfo.totalMem.formatSize()}"
-        TextViewMaps["StorageView"]!!.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t|\t总共：\t${storageInfo.totalMem.formatSize()}"
+        TextViewMaps["MemoryView"]!!.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
+        TextViewMaps["ZarmView"]!!.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t总共：${swapInfo.totalMem.formatSize()}\t剩余：${swapInfo.percentValue}%"
+        TextViewMaps["StorageView"]!!.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
     }
 
     private fun initView() {
         TextViewMaps.apply {
             put("MemoryView", newTextView())
-            put("StorageView", newTextView())
             put("ZarmView", newTextView())
+            put("StorageView", newTextView())
         }
         val memoryLayout = LinearLayout(appContext).apply {
             gravity = Gravity.CENTER
