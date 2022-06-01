@@ -24,23 +24,28 @@ import com.github.kyuubiran.ezxhelper.utils.putObject
 @SuppressLint("StaticFieldLeak")
 object MiuiHome : BaseHook() {
     private var TextViewMaps = LinkedHashMap<String, TextView>()
-    private var mInit: Boolean = false
+    private var TextViewList: List<String> = ArrayList<String>(listOf(
+        "MemoryView", "ZarmView",
+        "StorageView", "BootTime",
+    ))
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
-    private const val threshold = 20
+    private const val threshold = 21
 
     @SuppressLint("SetTextI18n") override fun init() {
+//        refresh view data
         catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "refreshMemoryInfo" }.hookAfter {
                 LogUtils.i("refreshMemoryInfo")
-//                refreshDate()
                 val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
                 val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
                 val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
                 TextViewMaps["MemoryView"]!!.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
                 TextViewMaps["ZarmView"]!!.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t总共：${swapInfo.totalMem.formatSize()}\t剩余：${swapInfo.percentValue}%"
                 TextViewMaps["StorageView"]!!.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
+                // TextViewMaps["BootTime"]!!.text = "2222"
 
+//                status color
                 TextViewMaps.forEach { (name, view) ->
                     run {
                         when (name) {
@@ -48,21 +53,21 @@ object MiuiHome : BaseHook() {
                                 if (memoryInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
-                                    view.setTextColor(Color.WHITE)
+                                    view.setTextColor(mTxtMemoryInfo1.textColors)
                                 }
                             }
                             "ZarmView" -> {
                                 if (swapInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
-                                    view.setTextColor(Color.WHITE)
+                                    view.setTextColor(mTxtMemoryInfo1.textColors)
                                 }
                             }
                             "StorageView" -> {
                                 if (storageInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
-                                    view.setTextColor(Color.WHITE)
+                                    view.setTextColor(mTxtMemoryInfo1.textColors)
                                 }
                             }
                         }
@@ -70,23 +75,27 @@ object MiuiHome : BaseHook() {
                 }
             }
         }
+//        hide the original view
         catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onFinishInflate" }.hookAfter {
                 LogUtils.i("onFinishInflate")
                 mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
-//                hideView(it)
                 it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
                 for (i in 0 until mTxtMemoryViewGroup.childCount) {
                     mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
                 }
-
                 mTxtMemoryInfo1 = it.thisObject.getObjectAs("mTxtMemoryInfo1")
-//                initView()
 
                 TextViewMaps.apply {
-                    put("MemoryView", newTextView())
-                    put("ZarmView", newTextView())
-                    put("StorageView", newTextView())
+                    TextViewList.forEach { name ->
+                        run {
+                            this[name] = TextView(appContext).apply {
+                                LogUtils.i(name)
+                                setTextColor(mTxtMemoryInfo1.textColors)
+                                textSize = 12f
+                            }
+                        }
+                    }
                 }
                 val memoryLayout = LinearLayout(appContext).apply {
                     gravity = Gravity.CENTER
@@ -96,48 +105,10 @@ object MiuiHome : BaseHook() {
                     run { memoryLayout.addView(view) }
                 }
                 mTxtMemoryViewGroup.addView(memoryLayout)
-
-                mInit = true
             }
         }
     }
 //    #dc143c
 
-//    @SuppressLint("SetTextI18n") private fun refreshDate() {
-//        val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
-//        val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
-//        val swapInfo: MemoryUtils = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-//        TextViewMaps["MemoryView"]!!.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
-//        TextViewMaps["ZarmView"]!!.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t总共：${swapInfo.totalMem.formatSize()}\t剩余：${swapInfo.percentValue}%"
-//        TextViewMaps["StorageView"]!!.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
-//    }
-
-//    private fun initView() {
-//        TextViewMaps.apply {
-//            put("MemoryView", newTextView())
-//            put("ZarmView", newTextView())
-//            put("StorageView", newTextView())
-//        }
-//        val memoryLayout = LinearLayout(appContext).apply {
-//            gravity = Gravity.CENTER
-//            orientation = LinearLayout.VERTICAL
-//        }
-//        TextViewMaps.forEach { (_, view) ->
-//            run { memoryLayout.addView(view) }
-//        }
-//        mTxtMemoryViewGroup.addView(memoryLayout)
-//    }
-
-    private fun newTextView(): TextView = TextView(appContext).apply {
-        setTextColor(mTxtMemoryInfo1.textColors)
-        textSize = 12f
-    }
-
-//    private fun hideView(it: XC_MethodHook.MethodHookParam) {
-//        it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
-//        for (i in 0 until mTxtMemoryViewGroup.childCount) {
-//            mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
-//        }
-//    }
 
 }
