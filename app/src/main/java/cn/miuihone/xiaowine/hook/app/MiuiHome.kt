@@ -1,9 +1,12 @@
+@file:Suppress("DEPRECATION")
+
 package cn.miuihone.xiaowine.hook.app
 
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Environment
 import android.view.Gravity
@@ -56,6 +59,11 @@ object MiuiHome : BaseHook() {
                         when (name) {
                             "MemoryView" -> {
                                 view.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
+//                                view.setOnClickListener{
+//                                    val intent = Intent()
+//                                    intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
+//                                    appContext.startActivity(intent)
+//                                }
                                 if (memoryInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
@@ -72,6 +80,11 @@ object MiuiHome : BaseHook() {
                             }
                             "StorageView" -> {
                                 view.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
+//                                view.setOnClickListener {
+//                                    val intent = Intent()
+//                                    intent.setClassName("com.miui.home", "com.miui.home.activity.MainActivity")
+//                                    appContext.startActivity(intent)
+//                                }
                                 if (storageInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
@@ -83,9 +96,24 @@ object MiuiHome : BaseHook() {
                             }
                             "RunningAppTotal" -> {
                                 view.text = "运行中应用总数：\t${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size}"
+                                /* view.setOnClickListener{
+                                     val intent = Intent()
+                                     intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
+                                     appContext.startActivity(intent)
+                                 }*/
                             }
                             "RunningServiceTotal" -> {
                                 view.text = "运行中服务总数：\t${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size}"
+//                                view.setOnClickListener{
+//                                    val intent = Intent()
+//                                    intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
+//                                    intent.putExtra("settings:source_metrics",39)
+//                                    intent.putExtra("android:show_fragment_title",-1)
+//                                    intent.putExtra("show_fragment_title_resid",-1)
+//                                    intent.putExtra("settings:show_fragment_title","正在运行的服务/应用")
+//                                    intent.putExtra("settings:show_fragment","com.android.settings.applications.RunningServices")
+//                                    appContext.startActivity(intent)
+//                                }
                             }
                         }
                     }
@@ -107,15 +135,17 @@ object MiuiHome : BaseHook() {
                     TextViewList.forEach { name ->
                         run {
                             this[name] = TextView(appContext).apply {
-                                LogUtils.i(name)
+                                LogUtils.i("Init view $name")
                                 setTextColor(mTxtMemoryInfo1.textColors)
+                                gravity= Gravity.START
                                 textSize = 12f
                             }
                         }
                     }
                 }
                 val memoryLayout = LinearLayout(appContext).apply {
-                    gravity = Gravity.CENTER
+//                    gravity = Gravity.END
+//                    layoutParams.width = mTxtMemoryViewGroup.width
                     orientation = LinearLayout.VERTICAL
                 }
                 TextViewMaps.forEach { (_, view) ->
