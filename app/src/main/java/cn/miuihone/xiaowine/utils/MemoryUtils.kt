@@ -71,7 +71,7 @@ class MemoryUtils {
         return this
     }
 
-    fun getPartitionInfo(totalMemKey: String?, availMemKey: String?): MemoryUtils {
+    fun getPartitionInfo(totalMemKey: String, availMemKey: String): MemoryUtils {
         totalMem = getOthersMemory(totalMemKey)
         availMem = getOthersMemory(availMemKey)
         usedMem = totalMem - availMem
@@ -79,7 +79,7 @@ class MemoryUtils {
         return this
     }
 
-    fun getPartitionInfo(totalMemKey: String?, memKey: String?, used: Boolean): MemoryUtils {
+    fun getPartitionInfo(totalMemKey: String, memKey: String, used: Boolean): MemoryUtils {
         if (used) {
             totalMem = getOthersMemory(totalMemKey)
             usedMem = getOthersMemory(memKey)
@@ -91,7 +91,7 @@ class MemoryUtils {
         return this
     }
 
-    fun getPartitionInfo(totalMemKey: String?, availMemKey: String?, usedMemKey: String?): MemoryUtils {
+    fun getPartitionInfo(totalMemKey: String, availMemKey: String, usedMemKey: String): MemoryUtils {
         totalMem = getOthersMemory(totalMemKey)
         availMem = getOthersMemory(availMemKey)
         usedMem = getOthersMemory(usedMemKey)
@@ -108,11 +108,22 @@ class MemoryUtils {
         return null
     }
 
-    private fun getOthersMemory(keyName: String?): Long {
+    private fun getOthersMemory(keyName: String): Long {
         try {
-            val list = toString(FileInputStream("/proc/meminfo")).split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val fileInputStream = FileInputStream("/proc/meminfo")
+            val stringBuilder = StringBuilder()
+            val bf = BufferedReader(InputStreamReader(fileInputStream))
+            var line: String?
+            var emptyOrNewLine = ""
+            while (bf.readLine().also { line = it } != null) {
+                stringBuilder.append(emptyOrNewLine).append(line)
+                emptyOrNewLine = "\n"
+            }
+            fileInputStream.close()
+            bf.close()
+            val list = stringBuilder.toString().split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             for (s in list) {
-                if (s.contains(keyName!!)) {
+                if (s.contains(keyName)) {
                     return s.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].replace("k", "").replace("B", "").replace("K", "").replace("b", "").trim { it <= ' ' }.toLong() * 1024
                 }
             }
@@ -124,23 +135,6 @@ class MemoryUtils {
     } // Byte转换为KB或者MB，内存大小规格化	}
 
     private fun getPercent(value1: Double, value2: Double): Int {
-        // return DecimalFormat("00").format(value1 / value2).toInt()
-        return ((value1 / value2)*100).roundToInt()
-    }
-
-    companion object {
-        @Throws(IOException::class) fun toString(`is`: InputStream): String {
-            val stringBuilder = StringBuilder()
-            val bf = BufferedReader(InputStreamReader(`is`))
-            var line: String?
-            var emptyOrNewLine = ""
-            while (bf.readLine().also { line = it } != null) {
-                stringBuilder.append(emptyOrNewLine).append(line)
-                emptyOrNewLine = "\n"
-            }
-            `is`.close()
-            bf.close()
-            return stringBuilder.toString()
-        }
+        return ((value1 / value2) * 100).roundToInt()
     }
 }

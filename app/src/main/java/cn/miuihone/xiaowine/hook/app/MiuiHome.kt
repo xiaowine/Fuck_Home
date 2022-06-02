@@ -12,6 +12,7 @@ import android.widget.TextView
 import cn.miuihone.xiaowine.hook.BaseHook
 import cn.miuihone.xiaowine.utils.LogUtils
 import cn.miuihone.xiaowine.utils.MemoryUtils
+import cn.miuihone.xiaowine.utils.Utils
 import cn.miuihone.xiaowine.utils.Utils.catchNoClass
 import cn.miuihone.xiaowine.utils.Utils.formatSize
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
@@ -25,8 +26,10 @@ import com.github.kyuubiran.ezxhelper.utils.putObject
 object MiuiHome : BaseHook() {
     private var TextViewMaps = LinkedHashMap<String, TextView>()
     private var TextViewList: List<String> = ArrayList<String>(listOf(
-        "MemoryView", "ZarmView",
-        "StorageView", "BootTime",
+        "MemoryView",
+        "ZarmView",
+        "StorageView",
+        "BootTime",
     ))
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
@@ -43,7 +46,7 @@ object MiuiHome : BaseHook() {
                 TextViewMaps["MemoryView"]!!.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
                 TextViewMaps["ZarmView"]!!.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t总共：${swapInfo.totalMem.formatSize()}\t剩余：${swapInfo.percentValue}%"
                 TextViewMaps["StorageView"]!!.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
-                // TextViewMaps["BootTime"]!!.text = "2222"
+                TextViewMaps["BootTime"]!!.text = "已开机时长：${Utils.BootTime.get()}"
 
 //                status color
                 TextViewMaps.forEach { (name, view) ->

@@ -6,26 +6,30 @@ import com.github.kyuubiran.ezxhelper.init.InitFields
 
 
 object Utils {
-    fun Long.formatTimeS(): String {
-        var temp: Int
-        val sb = StringBuffer()
-        if (this > 3600) {
-            temp = (this / 3600).toInt()
-            sb.append(if (this / 3600 < 10) "0$temp:" else "$temp:")
-            temp = (this % 3600 / 60).toInt()
-            changeSeconds(this, temp, sb)
-        } else {
-            temp = (this % 3600 / 60).toInt()
-            changeSeconds(this, temp, sb)
+    object BootTime {
+        fun get(): String {
+            val time = SystemClock.elapsedRealtime()/ 1000
+            var temp: Int
+            val sb = StringBuffer()
+            if (time > 3600) {
+                temp = (time / 3600).toInt()
+                sb.append(if (time / 3600 < 10) "0$temp:" else "$temp:")
+                temp = (time % 3600 / 60).toInt()
+                changeSeconds(time, temp, sb)
+            } else {
+                temp = (time % 3600 / 60).toInt()
+                changeSeconds(time, temp, sb)
+            }
+            return sb.toString()
         }
-        return sb.toString()
-    }
 
-    private fun changeSeconds(seconds: Long, temp: Int, sb: StringBuffer) {
-        var temps = temp
-        sb.append(if (temps < 10) "0$temps:" else "$temps:")
-        temps = (seconds % 3600 % 60).toInt()
-        sb.append(if (temps < 10) "0$temps" else "" + temps)
+        private fun changeSeconds(seconds: Long, temp: Int, sb: StringBuffer) {
+            var temps = temp
+            sb.append(if (temps < 10) "0$temps:" else "$temps:")
+            temps = (seconds % 3600 % 60).toInt()
+            sb.append(if (temps < 10) "0$temps" else "" + temps)
+        }
+
     }
 
     fun catchNoClass(callback: () -> Unit) {
@@ -39,9 +43,6 @@ object Utils {
     }
 
     fun Any.formatSize(): String = Formatter.formatFileSize(InitFields.appContext, this as Long)
-
-    // 返回开机时间，单位微妙
-    fun bootTime(): Long = System.currentTimeMillis() - SystemClock.elapsedRealtimeNanos() / 1000000000
 
 
     fun Any?.isNull(callback: () -> Unit) {
