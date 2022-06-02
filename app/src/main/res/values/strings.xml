@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">墨•桌</string>
-    <string name="xposed_desc">将MIUI桌面后台内存详细改为真实值</string>
+    <string name="xposed_desc">将MIUI桌面后台内存详细改为真实值并添加部分信息</string>
 </resources>
