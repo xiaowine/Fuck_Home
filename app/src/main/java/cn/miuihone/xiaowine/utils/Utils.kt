@@ -1,14 +1,16 @@
 package cn.miuihone.xiaowine.utils
 
+import android.content.Context
 import android.os.SystemClock
 import android.text.format.Formatter
 import com.github.kyuubiran.ezxhelper.init.InitFields
+import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 
 
 object Utils {
     object BootTime {
         fun get(): String {
-            val time = SystemClock.elapsedRealtime()/ 1000
+            val time = SystemClock.elapsedRealtime() / 1000
             var temp: Int
             val sb = StringBuffer()
             if (time > 3600) {
@@ -32,6 +34,10 @@ object Utils {
 
     }
 
+    fun getRunningApp(){
+        val am = (appContext.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager).runningAppProcesses.size
+    }
+
     fun catchNoClass(callback: () -> Unit) {
         try {
             callback()
@@ -42,7 +48,7 @@ object Utils {
         }
     }
 
-    fun Any.formatSize(): String = Formatter.formatFileSize(InitFields.appContext, this as Long)
+    fun Any.formatSize(): String = Formatter.formatFileSize(appContext, this as Long)
 
 
     fun Any?.isNull(callback: () -> Unit) {

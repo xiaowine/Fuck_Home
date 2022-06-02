@@ -2,6 +2,8 @@ package cn.miuihone.xiaowine.hook.app
 
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
 import android.graphics.Color
 import android.os.Environment
 import android.view.Gravity
@@ -30,6 +32,8 @@ object MiuiHome : BaseHook() {
         "ZarmView",
         "StorageView",
         "BootTime",
+        "RunningAppTotal",
+        "RunningServiceTotal",
     ))
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
@@ -43,16 +47,15 @@ object MiuiHome : BaseHook() {
                 val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
                 val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
                 val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
-                TextViewMaps["MemoryView"]!!.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
-                TextViewMaps["ZarmView"]!!.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t总共：${swapInfo.totalMem.formatSize()}\t剩余：${swapInfo.percentValue}%"
-                TextViewMaps["StorageView"]!!.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
-                TextViewMaps["BootTime"]!!.text = "已开机时长：${Utils.BootTime.get()}"
 
+
+//
 //                status color
                 TextViewMaps.forEach { (name, view) ->
                     run {
                         when (name) {
                             "MemoryView" -> {
+                                view.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
                                 if (memoryInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
@@ -60,6 +63,7 @@ object MiuiHome : BaseHook() {
                                 }
                             }
                             "ZarmView" -> {
+                                view.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t总共：${swapInfo.totalMem.formatSize()}\t剩余：${swapInfo.percentValue}%"
                                 if (swapInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
@@ -67,11 +71,21 @@ object MiuiHome : BaseHook() {
                                 }
                             }
                             "StorageView" -> {
+                                view.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
                                 if (storageInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
                                     view.setTextColor(mTxtMemoryInfo1.textColors)
                                 }
+                            }
+                            "BootTime" -> {
+                                view.text = "已开机时间：\t${Utils.BootTime.get()}"
+                            }
+                            "RunningAppTotal" -> {
+                                view.text = "运行中应用总数：\t${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size}"
+                            }
+                            "RunningServiceTotal" -> {
+                                view.text = "运行中服务总数：\t${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size}"
                             }
                         }
                     }
