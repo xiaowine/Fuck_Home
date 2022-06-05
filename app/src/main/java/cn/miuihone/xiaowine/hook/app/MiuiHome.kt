@@ -6,7 +6,6 @@ package cn.miuihone.xiaowine.hook.app
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Environment
 import android.view.Gravity
@@ -40,6 +39,8 @@ object MiuiHome : BaseHook() {
     ))
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
+    private lateinit var MemoryLayout: LinearLayout
+    private var MaxWidth = 0
     private const val threshold = 21
 
     @SuppressLint("SetTextI18n") override fun init() {
@@ -51,11 +52,11 @@ object MiuiHome : BaseHook() {
                 val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
                 val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
 
-
-//
 //                status color
                 TextViewMaps.forEach { (name, view) ->
                     run {
+                        if (view.width > MaxWidth) MaxWidth = view.width
+                        LogUtils.i("$name: ${view.width}")
                         when (name) {
                             "MemoryView" -> {
                                 view.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
@@ -118,6 +119,9 @@ object MiuiHome : BaseHook() {
                         }
                     }
                 }
+                LogUtils.i("MaxWidth: $MaxWidth")
+                LogUtils.i("Set mTxtMemoryViewGroup width to: $MaxWidth")
+                mTxtMemoryViewGroup.layoutParams.width = MaxWidth + 10
             }
         }
 //        hide the original view
@@ -125,33 +129,39 @@ object MiuiHome : BaseHook() {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onFinishInflate" }.hookAfter {
                 LogUtils.i("onFinishInflate")
                 mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
+                mTxtMemoryViewGroup.setBackgroundColor(Color.BLUE)
                 it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
                 for (i in 0 until mTxtMemoryViewGroup.childCount) {
                     mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
                 }
                 mTxtMemoryInfo1 = it.thisObject.getObjectAs("mTxtMemoryInfo1")
-
                 TextViewMaps.apply {
                     TextViewList.forEach { name ->
                         run {
                             this[name] = TextView(appContext).apply {
                                 LogUtils.i("Init view $name")
                                 setTextColor(mTxtMemoryInfo1.textColors)
-                                gravity= Gravity.START
+                                gravity = Gravity.START
                                 textSize = 12f
+                                marqueeRepeatLimit = -1
+                                isSingleLine = true
+                                maxLines = 1
                             }
                         }
                     }
                 }
-                val memoryLayout = LinearLayout(appContext).apply {
-//                    gravity = Gravity.END
+                MemoryLayout = LinearLayout(appContext).apply {
+                    setBackgroundColor(Color.RED)
 //                    layoutParams.width = mTxtMemoryViewGroup.width
                     orientation = LinearLayout.VERTICAL
                 }
-                TextViewMaps.forEach { (_, view) ->
-                    run { memoryLayout.addView(view) }
+                TextViewMaps.forEach { (name, view) ->
+                    run {
+                        LogUtils.i("Add view $name")
+                        MemoryLayout.addView(view)
+                    }
                 }
-                mTxtMemoryViewGroup.addView(memoryLayout)
+                mTxtMemoryViewGroup.addView(MemoryLayout)
             }
         }
     }
