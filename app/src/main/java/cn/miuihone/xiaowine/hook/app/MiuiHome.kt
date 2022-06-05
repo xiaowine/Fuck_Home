@@ -129,7 +129,7 @@ object MiuiHome : BaseHook() {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onFinishInflate" }.hookAfter {
                 LogUtils.i("onFinishInflate")
                 mTxtMemoryViewGroup = it.thisObject.getObjectAs("mTxtMemoryContainer")
-                mTxtMemoryViewGroup.setBackgroundColor(Color.BLUE)
+//                mTxtMemoryViewGroup.setBackgroundColor(Color.BLUE)
                 it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
                 for (i in 0 until mTxtMemoryViewGroup.childCount) {
                     mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
@@ -151,7 +151,7 @@ object MiuiHome : BaseHook() {
                     }
                 }
                 MemoryLayout = LinearLayout(appContext).apply {
-                    setBackgroundColor(Color.RED)
+//                    setBackgroundColor(Color.RED)
 //                    layoutParams.width = mTxtMemoryViewGroup.width
                     orientation = LinearLayout.VERTICAL
                 }
