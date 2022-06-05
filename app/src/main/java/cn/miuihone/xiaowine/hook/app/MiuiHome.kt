@@ -6,6 +6,7 @@ package cn.miuihone.xiaowine.hook.app
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Environment
 import android.view.Gravity
@@ -24,6 +25,7 @@ import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 import com.github.kyuubiran.ezxhelper.utils.putObject
+import kotlin.math.roundToInt
 
 
 @SuppressLint("StaticFieldLeak")
@@ -57,12 +59,12 @@ object MiuiHome : BaseHook() {
                     run {
                         when (name) {
                             "MemoryView" -> {
-                                view.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
-//                                view.setOnClickListener{
-//                                    val intent = Intent()
-//                                    intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
-//                                    appContext.startActivity(intent)
-//                                }
+                                view.text = "运存 ${memoryInfo.availMem.formatSize()} | ${memoryInfo.totalMem.formatSize()}\t 剩余 ${memoryInfo.percentValue}%"
+                                view.setOnClickListener{
+                                    val intent = Intent()
+                                    intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
+                                    appContext.startActivity(intent)
+                                }
                                 if (memoryInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
@@ -70,7 +72,7 @@ object MiuiHome : BaseHook() {
                                 }
                             }
                             "ZarmView" -> {
-                                view.text = "虚拟可用：\t${swapInfo.availMem.formatSize()} \t总共：${swapInfo.totalMem.formatSize()}\t剩余：${swapInfo.percentValue}%"
+                                view.text = "虚拟 ${swapInfo.availMem.formatSize()} | ${swapInfo.totalMem.formatSize()}\t剩余 ${swapInfo.percentValue}%"
                                 if (swapInfo.percentValue < threshold) {
                                     view.setTextColor(Color.RED)
                                 } else {
@@ -78,7 +80,7 @@ object MiuiHome : BaseHook() {
                                 }
                             }
                             "StorageView" -> {
-                                view.text = "存储可用：\t${storageInfo.availMem.formatSize()} \t总共：\t${storageInfo.totalMem.formatSize()}\t剩余：${storageInfo.percentValue}%"
+                                view.text = "存储 ${storageInfo.availMem.formatSize()} | ${storageInfo.totalMem.formatSize()}\t剩余 ${storageInfo.percentValue}%"
 //                                view.setOnClickListener {
 //                                    val intent = Intent()
 //                                    intent.setClassName("com.miui.home", "com.miui.home.activity.MainActivity")
@@ -91,18 +93,18 @@ object MiuiHome : BaseHook() {
                                 }
                             }
                             "BootTime" -> {
-                                view.text = "已开机时间：\t${Utils.BootTime.get()}"
+                                view.text = "已开机时间 ${Utils.BootTime.get()}"
                             }
                             "RunningAppTotal" -> {
-                                view.text = "运行中应用总数：\t${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size}"
-                                /* view.setOnClickListener{
-                                     val intent = Intent()
-                                     intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
-                                     appContext.startActivity(intent)
-                                 }*/
+                                view.text = "运行中应用总数 ${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size}"
+//                                /* view.setOnClickListener{
+//                                     val intent = Intent()
+//                                     intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
+//                                     appContext.startActivity(intent)
+//                                 }*/
                             }
                             "RunningServiceTotal" -> {
-                                view.text = "运行中服务总数：\t${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size}"
+                                view.text = "运行中服务总数 ${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size}"
 //                                view.setOnClickListener{
 //                                    val intent = Intent()
 //                                    intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
@@ -115,6 +117,7 @@ object MiuiHome : BaseHook() {
 //                                }
                             }
                         }
+                        view.width = view.paint.measureText("${view.text}").roundToInt() + 10
                         if (view.width > MaxWidth) MaxWidth = view.width
                         LogUtils.i("$name: ${view.width}")
                     }
