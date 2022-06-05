@@ -40,7 +40,7 @@ object MiuiHome : BaseHook() {
     private lateinit var mTxtMemoryViewGroup: ViewGroup
     private lateinit var mTxtMemoryInfo1: TextView
     private lateinit var MemoryLayout: LinearLayout
-    private var MaxWidth = 0
+    private var MaxWidth = 300
     private const val threshold = 21
 
     @SuppressLint("SetTextI18n") override fun init() {
@@ -55,8 +55,6 @@ object MiuiHome : BaseHook() {
 //                status color
                 TextViewMaps.forEach { (name, view) ->
                     run {
-                        if (view.width > MaxWidth) MaxWidth = view.width
-                        LogUtils.i("$name: ${view.width}")
                         when (name) {
                             "MemoryView" -> {
                                 view.text = "运存可用：\t${memoryInfo.availMem.formatSize()} \t总共：\t${memoryInfo.totalMem.formatSize()}\t剩余：${memoryInfo.percentValue}%"
@@ -117,8 +115,11 @@ object MiuiHome : BaseHook() {
 //                                }
                             }
                         }
+                        if (view.width > MaxWidth) MaxWidth = view.width
+                        LogUtils.i("$name: ${view.width}")
                     }
                 }
+
                 LogUtils.i("MaxWidth: $MaxWidth")
                 LogUtils.i("Set mTxtMemoryViewGroup width to: $MaxWidth")
                 mTxtMemoryViewGroup.layoutParams.width = MaxWidth + 10
