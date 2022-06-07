@@ -59,7 +59,7 @@ object MiuiHome : BaseHook() {
                     run {
                         when (name) {
                             "MemoryView" -> {
-                                view.text = "运存 ${memoryInfo.availMem.formatSize()} | ${memoryInfo.totalMem.formatSize()}\t 剩余 ${memoryInfo.percentValue}%"
+                                view.text = "运存 ${memoryInfo.availMem.formatSize()} | ${memoryInfo.totalMem.formatSize()}\t剩余 ${memoryInfo.percentValue}%"
                                 view.setOnClickListener{
                                     val intent = Intent()
                                     intent.setClassName("com.android.settings", "com.android.settings.SubSettings")
