@@ -48,7 +48,7 @@ jobs:
         run: |
           cd xtoast
           git submodule init
-          git submodule update#
+          git submodule update
 
       - name: Build with Gradle
         run: |
