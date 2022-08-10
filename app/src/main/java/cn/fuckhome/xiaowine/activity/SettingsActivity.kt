@@ -22,7 +22,8 @@ class SettingsActivity : MIUIActivity() {
 
     init {
         initView {
-            registerMain(getString(R.string.AppName), false) { TextS(textId = R.string.MainSwitch, key = "MainSwitch")
+            registerMain(getString(R.string.AppName), false) {
+                TextS(textId = R.string.MainSwitch, key = "MainSwitch")
                 TextS(textId = R.string.MemoryView, key = "MemoryView")
                 TextS(textId = R.string.ZarmView, key = "ZarmView")
                 TextS(textId = R.string.StorageView, key = "StorageView")
@@ -63,7 +64,7 @@ class SettingsActivity : MIUIActivity() {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (0..900)) {
+                                    if (value in (-900..900)) {
                                         ActivityOwnSP.ownSPConfig.setValue("LeftMargin", value)
                                         dismiss()
                                         return@setRButton
@@ -94,6 +95,7 @@ class SettingsActivity : MIUIActivity() {
                         setTitle(R.string.ResetModuleDialog)
                         setMessage(R.string.ResetModuleDialogTips)
                         setLButton(R.string.Ok) {
+                            ActivityOwnSP.ownSPConfig.clear()
                             ActivityUtils.showToastOnLooper(activity, activity.getString(R.string.ResetSuccess))
                             activity.finishActivity(0)
                             dismiss()
