@@ -1,4 +1,4 @@
-package cn.miuihone.xiaowine.utils
+package cn.fuckhome.xiaowine.utils
 
 import android.app.ActivityManager
 import android.content.Context
@@ -6,8 +6,6 @@ import android.os.StatFs
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStream
 import java.io.InputStreamReader
 import kotlin.math.roundToInt
 

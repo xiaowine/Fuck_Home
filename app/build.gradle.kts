@@ -12,7 +12,7 @@ android {
 
     val buildTime = System.currentTimeMillis()
     defaultConfig {
-        applicationId = "cn.miuihone.xiaowine"
+        applicationId = "cn.fuckhome.xiaowine"
         minSdk = 26
         targetSdk = 32
         versionCode = 2
@@ -30,8 +30,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.majorVersion
@@ -52,16 +52,15 @@ android {
     }
     applicationVariants.all {
         outputs.all {
-            (this as BaseVariantOutputImpl).outputFileName = "Ink_Hone-$versionName($versionCode)-$name-$buildTime.apk"
+            (this as BaseVariantOutputImpl).outputFileName = "Fuck_Home-$versionName($versionCode)-$name-$buildTime.apk"
         }
     }
 }
 
 
 dependencies {
-    implementation("com.github.kyuubiran:EzXHelper:0.9.2")
+    implementation("com.github.kyuubiran:EzXHelper:0.9.7")
     compileOnly("de.robv.android.xposed:api:82")
-//    implementation(files("libs/helplib.jar"))
-//    implementation(project(":blockmiui"))
-//    implementation(project(":xtoast"))
+    implementation(project(":blockmiui"))
+    implementation(project(":xtoast"))
 }

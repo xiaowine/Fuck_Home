@@ -18,4 +18,6 @@ dependencyResolutionManagement {
 }
 
 include(":app")
-rootProject.name = "Ink_Hone"
+include(":blockmiui")
+include(":xtoast")
+rootProject.name = "Fuck_Home"

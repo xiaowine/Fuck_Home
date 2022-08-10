@@ -1,6 +1,6 @@
 @file:Suppress("unused", "KotlinConstantConditions")
 
-package cn.miuihone.xiaowine.utils
+package cn.fuckhome.xiaowine.utils
 
 import android.content.res.XResources
 import com.github.kyuubiran.ezxhelper.init.InitFields.ezXClassLoader

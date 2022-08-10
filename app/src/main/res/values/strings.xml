@@ -1,4 +1,34 @@
 <resources>
-    <string name="app_name">墨•桌</string>
-    <string name="xposed_desc">将MIUI桌面后台内存详细改为真实值并添加部分信息</string>
+    <string name="AppName">墨•桌</string>
+    <string name="XposedDesc">将MIUI桌面后台内存详细改为真实值并添加部分信息</string>
+    <string name="Tips">提示</string>
+    <string name="NotSupport">本模块未激活，请在 LSPosed 内激活本模块\n本模块仅支持最新版 LSPosed</string>
+    <string name="Restart">重启 App</string>
+    <string name="Menu">菜单</string>
+    <string name="HideDeskIcon">隐藏桌面图标</string>
+    <string name="DebugMode">Debug 模式</string>
+    <string name="ResetModule">重置模块</string>
+    <string name="ResetModuleDialog">是否要重置模块</string>
+    <string name="ResetModuleDialogTips">模块没问题请不要随意重置</string>
+    <string name="Ok">确定</string>
+    <string name="Cancel">取消</string>
+    <string name="ResetSuccess">重置成功</string>
+    <string name="ReStartHome">重启桌面</string>
+    <string name="Backup">备份配置</string>
+    <string name="Recovery">恢复配置</string>
+    <string name="ModuleVersion">模块版本</string>
+    <string name="ModulePackName">模块包名</string>
+    <string name="BuildTime">编译时间</string>
+    <string name="MainSwitch">总开关</string>
+    <string name="MemoryView">显示运存</string>
+    <string name="ZarmView">显示虚拟</string>
+    <string name="StorageView">显示储存</string>
+    <string name="BootTime">显示开机时长</string>
+    <string name="RunningAppTotal">显示运行软件总数</string>
+    <string name="RunningServiceTotal">显示运行服务总数</string>
+    <string name="warning">低于20%警告</string>
+    <string name="TopMargin">左边距</string>
+    <string name="LeftMargin">上边距</string>
+    <string name="MarginTips">–900–900 像素点</string>
+    <string name="InputError">输入范围不正确！</string>
 </resources>

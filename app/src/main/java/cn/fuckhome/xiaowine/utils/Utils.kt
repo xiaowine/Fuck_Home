@@ -1,13 +1,29 @@
-package cn.miuihone.xiaowine.utils
+package cn.fuckhome.xiaowine.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.SystemClock
 import android.text.format.Formatter
-import com.github.kyuubiran.ezxhelper.init.InitFields
+import cn.fuckhome.xiaowine.config.Config
+import cn.fuckhome.xiaowine.BuildConfig
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
+import de.robv.android.xposed.XSharedPreferences
 
 
 object Utils {
+    val XConfig: Config by lazy { Config(getPref("Fuck_Home_Config")) }
+
+    fun getPref(key: String?): XSharedPreferences? {
+        val pref = XSharedPreferences(BuildConfig.APPLICATION_ID, key)
+        return if (pref.file.canRead()) pref else null
+    }
+
+    @SuppressLint("WorldReadableFiles")
+    fun getSP(context: Context, key: String?): SharedPreferences? {
+        return context.createDeviceProtectedStorageContext().getSharedPreferences(key, Context.MODE_WORLD_READABLE)
+    }
+
     object BootTime {
         fun get(): String {
             val time = SystemClock.elapsedRealtime() / 1000

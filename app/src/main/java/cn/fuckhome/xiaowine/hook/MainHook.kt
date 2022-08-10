@@ -1,10 +1,11 @@
-package cn.miuihone.xiaowine.hook
+package cn.fuckhome.xiaowine.hook
 
 import android.app.Application
 import android.content.Context
-import cn.miuihone.xiaowine.utils.hookBeforeMethod
-import cn.miuihone.xiaowine.hook.app.MiuiHome
-import cn.miuihone.xiaowine.utils.LogUtils
+import cn.fuckhome.xiaowine.utils.hookBeforeMethod
+import cn.fuckhome.xiaowine.hook.app.MiuiHome
+import cn.fuckhome.xiaowine.utils.LogUtils
+import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.utils.Log.logexIfThrow
 import de.robv.android.xposed.IXposedHookLoadPackage
@@ -16,6 +17,10 @@ private const val PACKAGE_MIUI_HOME = "com.miui.home"
 
 class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit /* Optional */ {
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
+        if (!XConfig.getBoolean("MainSwitch")) {
+            LogUtils.i("总开关未打开")
+            return
+        }
         when (lpparam.packageName) {
             PACKAGE_MIUI_HOME -> Application::class.java.hookBeforeMethod("attach", Context::class.java) {
                 EzXHelperInit.apply {
@@ -24,6 +29,8 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit /* Optional */ {
                     initHooks(MiuiHome)
                 }
             }
+
+            "com.android.settings" -> {}
             else -> return
         }
 

@@ -24,8 +24,8 @@
 
 
 
--keep public class cn.miuihone.xiaowine.hook.MainHook
+-keep public class cn.fuckhome.xiaowine.hook.MainHook
 
--keep class cn.miuihone.xiaowine.hook.MainHook {
+-keep class cn.fuckhome.xiaowine.hook.MainHook {
      <init>();
 }

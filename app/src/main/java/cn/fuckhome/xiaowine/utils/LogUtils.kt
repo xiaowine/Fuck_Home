@@ -20,18 +20,19 @@
  * <https://github.com/577fkj/StatusBarLyric/blob/main/LICENSE>.
  */
 
-package cn.miuihone.xiaowine.utils
+package cn.fuckhome.xiaowine.utils
 
 import android.util.Log
+import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import de.robv.android.xposed.XposedBridge
 
 object LogUtils {
     private const val maxLength = 4000
-    private const val TAG = "Ink_Hone"
+    private const val TAG = "Fuck_Home"
 
 
-    @JvmStatic
-    fun log(obj: Any?, toXposed: Boolean = false, toLogd: Boolean = false) {
+    private fun log(obj: Any?, toXposed: Boolean = false, toLogd: Boolean = false) {
+        if (!XConfig.getBoolean("Debug")) return
         val content = if (obj is Throwable) Log.getStackTraceString(obj) else obj.toString()
         if (content.length > maxLength) {
             val chunkCount = content.length / maxLength
