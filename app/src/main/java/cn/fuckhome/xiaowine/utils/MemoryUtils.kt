@@ -133,6 +133,9 @@ class MemoryUtils {
     } // Byte转换为KB或者MB，内存大小规格化	}
 
     private fun getPercent(value1: Double, value2: Double): Int {
+        if (value2.toInt() == 0) {
+            return 0
+        }
         return ((value1 / value2) * 100).roundToInt()
     }
 }
