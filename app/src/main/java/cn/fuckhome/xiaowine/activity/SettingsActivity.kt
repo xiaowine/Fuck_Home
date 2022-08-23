@@ -79,6 +79,7 @@ class SettingsActivity : MIUIActivity() {
                         setLButton(R.string.Cancel) { dismiss() }
                     }.show()
                 })
+                TextS(textId = R.string.Pad, key = "Pad")
                 Text()
             }
             registerMenu(getString(R.string.Menu)) {

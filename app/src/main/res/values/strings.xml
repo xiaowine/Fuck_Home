@@ -31,4 +31,5 @@
     <string name="LeftMargin">上边距</string>
     <string name="MarginTips">–900–900 像素点</string>
     <string name="InputError">输入范围不正确！</string>
+    <string name="Pad">强开平板模式(需要安装平板的桌面)</string>
 </resources>

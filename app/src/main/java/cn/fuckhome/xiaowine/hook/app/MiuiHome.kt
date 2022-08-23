@@ -8,6 +8,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Environment
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -22,11 +23,7 @@ import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import cn.fuckhome.xiaowine.utils.Utils.catchNoClass
 import cn.fuckhome.xiaowine.utils.Utils.formatSize
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
-import com.github.kyuubiran.ezxhelper.utils.findConstructor
-import com.github.kyuubiran.ezxhelper.utils.findMethod
-import com.github.kyuubiran.ezxhelper.utils.getObjectAs
-import com.github.kyuubiran.ezxhelper.utils.hookAfter
-import com.github.kyuubiran.ezxhelper.utils.putObject
+import com.github.kyuubiran.ezxhelper.utils.*
 
 
 @SuppressLint("StaticFieldLeak")
@@ -44,6 +41,15 @@ object MiuiHome : BaseHook() {
 
     @SuppressLint("SetTextI18n")
     override fun init() {
+        if (XConfig.getBoolean("Pad")) {
+            catchNoClass {
+                findMethod("com.miui.home.launcher.common.Utilities") { name == "isPadDevice" }.hookBefore {
+                    Log.i("LSPosed", "isPadDevice")
+                    it.result = true
+                }
+            }
+        }
+
         val resourceId: Int = appContext.resources.getIdentifier("status_bar_height", "dimen", "android")
         height = appContext.resources.getDimensionPixelSize(resourceId)
 //        初始化根控件
