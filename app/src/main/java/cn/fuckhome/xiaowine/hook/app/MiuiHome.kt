@@ -6,6 +6,7 @@ package cn.fuckhome.xiaowine.hook.app
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Environment
 import android.util.Log
@@ -24,6 +25,7 @@ import cn.fuckhome.xiaowine.utils.Utils.catchNoClass
 import cn.fuckhome.xiaowine.utils.Utils.formatSize
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import com.github.kyuubiran.ezxhelper.utils.*
+import kotlin.math.roundToInt
 
 
 @SuppressLint("StaticFieldLeak")
@@ -36,8 +38,12 @@ object MiuiHome : BaseHook() {
     private lateinit var mLinearLayout: LinearLayout
     private lateinit var mTxtMemoryInfo1: TextView
 
-    //    private var MaxWidth = 300
+    private val metrics = appContext.resources.displayMetrics
+    private val widthPixels = metrics.widthPixels
+    private val heightPixels = metrics.heightPixels
+
     private const val threshold = 21
+
 
     @SuppressLint("SetTextI18n")
     override fun init() {
@@ -58,10 +64,6 @@ object MiuiHome : BaseHook() {
             mLinearLayout = LinearLayout(appContext).apply {
                 orientation = LinearLayout.VERTICAL
             }
-            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            params.topMargin = height + 10 + XConfig.getInt("TopMargin")
-            params.leftMargin = 600 + XConfig.getInt("LeftMargin")
-            mLinearLayout.layoutParams = params
             mView.addView(mLinearLayout)
             listOf("MemoryView", "ZarmView", "StorageView", "BootTime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
                 LogUtils.i(XConfig.getBoolean(s))
@@ -107,10 +109,22 @@ object MiuiHome : BaseHook() {
                 }
             }
         }
+
 //        刷新数据
         catchNoClass {
-            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "refreshMemoryInfo" }.hookAfter {
-                LogUtils.i("refreshMemoryInfo")
+            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
+                LogUtils.i("updateRotation")
+                val mResentsContainerRotation = it.args[0] as Int
+
+                val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                if (mResentsContainerRotation == 0) {
+                    params.topMargin = (height + 10 + XConfig.getInt("TopMargin0") / 100.0 * heightPixels).toInt()
+                    params.leftMargin = (XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
+                } else {
+                    params.topMargin = (height + XConfig.getInt("TopMargin1") / 100.0 * widthPixels).roundToInt()
+                    params.leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
+                }
+                mLinearLayout.layoutParams = params
                 val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
                 val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
                 val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
@@ -162,5 +176,6 @@ object MiuiHome : BaseHook() {
                 }
             }
         }
+
     }
 }

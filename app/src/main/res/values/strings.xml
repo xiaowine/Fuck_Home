@@ -27,9 +27,11 @@
     <string name="RunningAppTotal">显示运行软件总数</string>
     <string name="RunningServiceTotal">显示运行服务总数</string>
     <string name="warning">低于20%警告</string>
-    <string name="TopMargin">左边距</string>
-    <string name="LeftMargin">上边距</string>
-    <string name="MarginTips">–900–900 像素点</string>
+    <string name="TopMargin0">竖屏上边距</string>
+    <string name="LeftMargin0">竖屏左边距</string>
+    <string name="TopMargin1">横屏上边距</string>
+    <string name="LeftMargin1">横屏左边距</string>
+    <string name="MarginTips">0%-100%</string>
     <string name="InputError">输入范围不正确！</string>
     <string name="Pad">强开平板模式(需要安装平板的桌面)</string>
 </resources>
