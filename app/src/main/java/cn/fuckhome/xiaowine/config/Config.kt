@@ -22,6 +22,22 @@ class Config {
 
 
 
+    fun setColor(str: String) {
+        config.put("Color", str)
+    }
+
+    fun getColor(): String {
+        return config.optString("Color", "")
+    }
+    fun setBgColor(str: String) {
+        config.put("BgColor", str)
+    }
+
+    fun getBgColor(): String {
+        return config.optString("BgColor", "#00000000")
+    }
+
+
     fun getString(key: String, def: String = ""): String {
         return config.optString(key, def)
     }

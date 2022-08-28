@@ -12,6 +12,8 @@
     <string name="ResetModuleDialogTips">模块没问题请不要随意重置</string>
     <string name="Ok">确定</string>
     <string name="Cancel">取消</string>
+    <string name="AdvancedFeatures">高级功能</string>
+    <string name="Customize">自定义</string>
     <string name="ResetSuccess">重置成功</string>
     <string name="ReStartHome">重启桌面</string>
     <string name="Backup">备份配置</string>
@@ -34,4 +36,8 @@
     <string name="MarginTips">0%-100%</string>
     <string name="InputError">输入范围不正确！</string>
     <string name="Pad">强开平板模式(需要安装平板的桌面)</string>
+    <string name="Color">歌词颜色和透明度</string>
+    <string name="LyricColorError">颜色代码不正确!</string>
+    <string name="LyricColorTips">请输入 16 进制颜色代码，例如: #C0C0C0</string>
+    <string name="BackgroundColor">背景颜色和透明度</string>
 </resources>

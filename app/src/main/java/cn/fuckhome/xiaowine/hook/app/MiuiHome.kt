@@ -6,6 +6,7 @@ package cn.fuckhome.xiaowine.hook.app
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Environment
 import android.util.Log
@@ -31,17 +32,17 @@ import kotlin.math.roundToInt
 object MiuiHome : BaseHook() {
 
 
+    lateinit var textColors: ColorStateList
     private var height: Int = 0
     private var TextViewMaps = LinkedHashMap<String, TextView>()
     private var TextViewList = arrayListOf<String>()
     private lateinit var mLinearLayout: LinearLayout
-    private lateinit var mTxtMemoryInfo1: TextView
 
     private val metrics = appContext.resources.displayMetrics
     private val widthPixels = metrics.widthPixels
     private val heightPixels = metrics.heightPixels
 
-    private const val threshold = 21
+    const val threshold = 21
 
 
     @SuppressLint("SetTextI18n")
@@ -82,14 +83,16 @@ object MiuiHome : BaseHook() {
                 for (i in 0 until mTxtMemoryViewGroup.childCount) {
                     mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
                 }
-                mTxtMemoryInfo1 = it.thisObject.getObjectAs("mTxtMemoryInfo1")
+                val mTxtMemoryInfo1 = it.thisObject.getObjectAs<TextView>("mTxtMemoryInfo1")
+                textColors = mTxtMemoryInfo1.textColors
 
                 TextViewMaps.apply {
                     TextViewList.forEach { name ->
                         run {
                             this[name] = TextView(appContext).apply {
                                 LogUtils.i("Init view $name")
-                                setTextColor(mTxtMemoryInfo1.textColors)
+                                setBackgroundColor(Color.parseColor(XConfig.getBgColor()))
+                                Utils.viewColor(this,null)
                                 gravity = Gravity.END
                                 textSize = 12f
                                 marqueeRepeatLimit = -1
@@ -128,36 +131,26 @@ object MiuiHome : BaseHook() {
                 val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
                 val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
 //                val a= Settings.System.getInt(appContext.contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
-                
+
 //                status color
                 TextViewMaps.forEach { (name, view) ->
                     run {
                         when (name) {
                             "MemoryView" -> {
                                 view.text = "运存 ${memoryInfo.availMem.formatSize()} | ${memoryInfo.totalMem.formatSize()} 剩余 ${memoryInfo.percentValue}%"
-                                if (XConfig.getBoolean("Warning") && memoryInfo.percentValue < threshold) {
-                                    view.setTextColor(Color.RED)
-                                } else {
-                                    view.setTextColor(mTxtMemoryInfo1.textColors)
-                                }
+                                Utils.viewColor(view, memoryInfo)
                             }
 
                             "ZarmView" -> {
                                 view.text = "虚拟 ${swapInfo.availMem.formatSize()} | ${swapInfo.totalMem.formatSize()} 剩余 ${swapInfo.percentValue}%"
-                                if (XConfig.getBoolean("Warning") && swapInfo.percentValue < threshold) {
-                                    view.setTextColor(Color.RED)
-                                } else {
-                                    view.setTextColor(mTxtMemoryInfo1.textColors)
-                                }
+                                Utils.viewColor(view, memoryInfo)
+
                             }
 
                             "StorageView" -> {
                                 view.text = "存储 ${storageInfo.availMem.formatSize()} | ${storageInfo.totalMem.formatSize()} 剩余 ${storageInfo.percentValue}%"
-                                if (XConfig.getBoolean("Warning") && storageInfo.percentValue < threshold) {
-                                    view.setTextColor(Color.RED)
-                                } else {
-                                    view.setTextColor(mTxtMemoryInfo1.textColors)
-                                }
+                                Utils.viewColor(view, memoryInfo)
+
                             }
 
                             "BootTime" -> {
@@ -173,10 +166,7 @@ object MiuiHome : BaseHook() {
                             }
 
                         }
-                        LogUtils.i(view.paint.measureText(view.text.toString()).toInt() + 6)
-                        
                         view.width = view.paint.measureText(view.text.toString()).toInt() + 6
-                        LogUtils.i(view.width)
                     }
                 }
             }

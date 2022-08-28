@@ -3,12 +3,14 @@ package cn.fuckhome.xiaowine.activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import cn.aodlyric.xiaowine.utils.ActivityUtils
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.dialog.MIUIDialog
 import cn.fuckhome.xiaowine.BuildConfig
 import cn.fuckhome.xiaowine.R
+import cn.fuckhome.xiaowine.utils.ActivityOwnSP.ownSPConfig as config
 import cn.fuckhome.xiaowine.utils.ActivityOwnSP
 import cn.fuckhome.xiaowine.utils.BackupUtils
 import cn.fuckhome.xiaowine.utils.Utils
@@ -31,6 +33,55 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
+                Line()
+                TitleText(textId=R.string.AdvancedFeatures)
+                TextS(textId = R.string.Pad, key = "Pad")
+                Line()
+                TitleText(textId=R.string.Customize)
+                TextA(textId = R.string.Color, onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.Color)
+                        setMessage(R.string.LyricColorTips)
+                        setEditText(config.getColor(), "")
+                        setRButton(R.string.Ok) {
+                            if (getEditText().isNotEmpty()) {
+                                try {
+                                    Color.parseColor(getEditText())
+                                    config.setColor(getEditText())
+                                    dismiss()
+                                    return@setRButton
+                                } catch (_: Throwable) {
+                                }
+                            }
+                            ActivityUtils.showToastOnLooper(activity, getString(R.string.LyricColorError))
+                            config.setColor("")
+                            dismiss()
+                        }
+                        setLButton(R.string.Cancel) { dismiss() }
+                    }.show()
+                })
+                TextA(textId = R.string.BackgroundColor, onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.BackgroundColor)
+                        setMessage(R.string.LyricColorTips)
+                        setEditText(config.getBgColor(), "#00000000")
+                        setRButton(R.string.Ok) {
+                            if (getEditText().isNotEmpty()) {
+                                try {
+                                    Color.parseColor(getEditText())
+                                    config.setBgColor(getEditText())
+                                    dismiss()
+                                    return@setRButton
+                                } catch (_: Throwable) {
+                                }
+                            }
+                            ActivityUtils.showToastOnLooper(activity, getString(R.string.LyricColorError))
+                            config.setBgColor("#00000000")
+                            dismiss()
+                        }
+                        setLButton(R.string.Cancel) { dismiss() }
+                    }.show()
+                })
                 Line()
                 TextA(textId = R.string.LeftMargin0, onClickListener = {
                     MIUIDialog(activity) {
@@ -128,7 +179,6 @@ class SettingsActivity : MIUIActivity() {
                         setLButton(R.string.Cancel) { dismiss() }
                     }.show()
                 })
-                TextS(textId = R.string.Pad, key = "Pad")
                 Text()
             }
             registerMenu(getString(R.string.Menu)) {

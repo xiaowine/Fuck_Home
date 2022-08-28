@@ -1,18 +1,45 @@
+@file:Suppress("DEPRECATION")
+
 package cn.fuckhome.xiaowine.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.SystemClock
 import android.text.format.Formatter
-import cn.fuckhome.xiaowine.config.Config
+import android.widget.TextView
 import cn.fuckhome.xiaowine.BuildConfig
+import cn.fuckhome.xiaowine.config.Config
+import cn.fuckhome.xiaowine.hook.app.MiuiHome
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import de.robv.android.xposed.XSharedPreferences
 
 
 object Utils {
     val XConfig: Config by lazy { Config(getPref("Fuck_Home_Config")) }
+
+
+    fun viewColor(view: TextView, info: MemoryUtils?) {
+        if (info.isNull()) {
+            if (XConfig.getColor().isEmpty()) {
+                view.setTextColor(Color.RED)
+            } else {
+                view.setTextColor(Color.parseColor(XConfig.getColor()))
+            }
+            return
+        }
+        if (XConfig.getBoolean("Warning") && info!!.percentValue < MiuiHome.threshold) {
+            view.setTextColor(Color.RED)
+        } else {
+            if (XConfig.getColor().isEmpty()) {
+                view.setTextColor(MiuiHome.textColors)
+            } else {
+                view.setTextColor(Color.parseColor(XConfig.getColor()))
+            }
+
+        }
+    }
 
     fun getPref(key: String?): XSharedPreferences? {
         val pref = XSharedPreferences(BuildConfig.APPLICATION_ID, key)
@@ -48,10 +75,6 @@ object Utils {
             sb.append(if (temps < 10) "0$temps" else "" + temps)
         }
 
-    }
-
-    fun getRunningApp(){
-        val am = (appContext.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager).runningAppProcesses.size
     }
 
     fun catchNoClass(callback: () -> Unit) {
