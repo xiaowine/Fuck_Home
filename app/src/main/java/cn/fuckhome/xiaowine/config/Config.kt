@@ -2,6 +2,7 @@ package cn.fuckhome.xiaowine.config
 
 
 import android.content.SharedPreferences
+import android.view.Gravity
 import cn.fuckhome.xiaowine.utils.ConfigUtils
 import de.robv.android.xposed.XSharedPreferences
 
@@ -36,7 +37,12 @@ class Config {
     fun getBgColor(): String {
         return config.optString("BgColor", "#00000000")
     }
-
+    fun setGravity(i: Int) {
+        config.put("Gravity", i)
+    }
+    fun getGravity(): Int {
+        return config.optInt("Gravity", Gravity.START)
+    }
 
     fun getString(key: String, def: String = ""): String {
         return config.optString(key, def)
@@ -59,4 +65,6 @@ class Config {
     fun clear() {
         config.clearConfig()
     }
+
+
 }

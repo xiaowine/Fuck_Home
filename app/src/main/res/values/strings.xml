@@ -41,4 +41,8 @@
     <string name="LyricColorError">颜色代码不正确!</string>
     <string name="LyricColorTips">请输入 16 进制颜色代码，例如: #C0C0C0</string>
     <string name="BackgroundColor">背景颜色和透明度</string>
+    <string name="Gravity">内部对齐方式</string>
+    <string name="CENTER">居中对齐</string>
+    <string name="START">靠右对齐</string>
+    <string name="END">靠左对齐</string>
 </resources>

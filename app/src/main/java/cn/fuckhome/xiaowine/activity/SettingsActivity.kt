@@ -5,8 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import cn.aodlyric.xiaowine.utils.ActivityUtils
 import cn.fkj233.ui.activity.MIUIActivity
+import cn.fkj233.ui.activity.view.SpinnerV
+import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import cn.fuckhome.xiaowine.BuildConfig
 import cn.fuckhome.xiaowine.R
@@ -33,12 +36,19 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
+                val dict: HashMap<Int, String> = hashMapOf()
+                dict[Gravity.CENTER] = getString(R.string.CENTER)
+                dict[Gravity.START] = getString(R.string.START)
+                dict[Gravity.END] = getString(R.string.END)
+                TextWithSpinner(TextV(textId = R.string.Gravity), SpinnerV(dict[Gravity.START]!!) {
+                    dict.forEach { (key, value) -> add(value) { config.setGravity(key) } }
+                })
                 Line()
-                TitleText(textId=R.string.AdvancedFeatures)
+                TitleText(textId = R.string.AdvancedFeatures)
                 TextS(textId = R.string.Pad, key = "Pad")
                 TextS(textId = R.string.Shortcuts, key = "Shortcuts")
                 Line()
-                TitleText(textId=R.string.Customize)
+                TitleText(textId = R.string.Customize)
                 TextA(textId = R.string.Color, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.Color)
@@ -134,7 +144,7 @@ class SettingsActivity : MIUIActivity() {
                 })
                 TextA(textId = R.string.LeftMargin1, onClickListener = {
                     MIUIDialog(activity) {
-                        setTitle(R.string.TopMargin1)
+                        setTitle(R.string.LeftMargin1)
                         setMessage(R.string.MarginTips)
                         setEditText(ActivityOwnSP.ownSPConfig.getInt("LeftMargin1").toString(), "0")
                         setRButton(R.string.Ok) {
@@ -158,7 +168,7 @@ class SettingsActivity : MIUIActivity() {
                 })
                 TextA(textId = R.string.TopMargin1, onClickListener = {
                     MIUIDialog(activity) {
-                        setTitle(R.string.LeftMargin1)
+                        setTitle(R.string.TopMargin1)
                         setMessage(R.string.MarginTips)
                         setEditText(ActivityOwnSP.ownSPConfig.getInt("TopMargin1").toString(), "0")
                         setRButton(R.string.Ok) {
