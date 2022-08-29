@@ -36,6 +36,7 @@ class SettingsActivity : MIUIActivity() {
                 Line()
                 TitleText(textId=R.string.AdvancedFeatures)
                 TextS(textId = R.string.Pad, key = "Pad")
+                TextS(textId = R.string.Shortcuts, key = "Shortcuts")
                 Line()
                 TitleText(textId=R.string.Customize)
                 TextA(textId = R.string.Color, onClickListener = {

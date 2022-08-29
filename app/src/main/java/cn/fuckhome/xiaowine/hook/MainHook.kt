@@ -3,7 +3,7 @@ package cn.fuckhome.xiaowine.hook
 import android.app.Application
 import android.content.Context
 import cn.fuckhome.xiaowine.utils.hookBeforeMethod
-import cn.fuckhome.xiaowine.hook.app.MiuiHome
+import cn.fuckhome.xiaowine.hook.module.MiuiHome
 import cn.fuckhome.xiaowine.utils.LogUtils
 import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit

@@ -11,7 +11,7 @@ import android.text.format.Formatter
 import android.widget.TextView
 import cn.fuckhome.xiaowine.BuildConfig
 import cn.fuckhome.xiaowine.config.Config
-import cn.fuckhome.xiaowine.hook.app.MiuiHome
+import cn.fuckhome.xiaowine.hook.module.MiuiHome
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import de.robv.android.xposed.XSharedPreferences
 

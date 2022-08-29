@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package cn.fuckhome.xiaowine.hook.app
+package cn.fuckhome.xiaowine.hook.module
 
 
 import android.annotation.SuppressLint
@@ -55,7 +55,9 @@ object MiuiHome : BaseHook() {
                 }
             }
         }
-
+        if (XConfig.getBoolean("Shortcuts")){
+            ModifyShortcutItemCount.init()
+        }
         val resourceId: Int = appContext.resources.getIdentifier("status_bar_height", "dimen", "android")
         height = appContext.resources.getDimensionPixelSize(resourceId)
 //        初始化根控件
