@@ -25,6 +25,9 @@ object Main : BaseHook() {
         if (XConfig.getBoolean("Shortcuts")) {
             ModifyShortcutItemCount.init()
         }
-        Info.init()
+        if (XConfig.getBoolean("UnlockGrids")) {
+            ModifyUnlockGrids.init()
+        }
+        AddInfo.init()
     }
 }

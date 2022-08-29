@@ -23,7 +23,7 @@ import com.github.kyuubiran.ezxhelper.utils.*
 import kotlin.math.roundToInt
 
 @SuppressLint("StaticFieldLeak")
-object Info : BaseHook() {
+object AddInfo : BaseHook() {
 
 
     lateinit var textColors: ColorStateList

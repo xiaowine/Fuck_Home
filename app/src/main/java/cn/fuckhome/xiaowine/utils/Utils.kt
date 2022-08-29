@@ -11,7 +11,7 @@ import android.text.format.Formatter
 import android.widget.TextView
 import cn.fuckhome.xiaowine.BuildConfig
 import cn.fuckhome.xiaowine.config.Config
-import cn.fuckhome.xiaowine.hook.module.Info
+import cn.fuckhome.xiaowine.hook.module.AddInfo
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import de.robv.android.xposed.XSharedPreferences
 
@@ -21,11 +21,11 @@ object Utils {
 
 
     fun viewColor(view: TextView, info: MemoryUtils?) {
-        if (info.isNotNull() && XConfig.getBoolean("Warning") && info!!.percentValue < Info.threshold) {
+        if (info.isNotNull() && XConfig.getBoolean("Warning") && info!!.percentValue < AddInfo.threshold) {
             view.setTextColor(Color.RED)
         } else {
             if (XConfig.getColor().isEmpty()) {
-                view.setTextColor(Info.textColors)
+                view.setTextColor(AddInfo.textColors)
             } else {
                 view.setTextColor(Color.parseColor(XConfig.getColor()))
             }

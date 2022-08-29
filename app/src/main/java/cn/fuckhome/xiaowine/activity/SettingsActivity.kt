@@ -36,17 +36,12 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
-                val dict: HashMap<Int, String> = hashMapOf()
-                dict[Gravity.CENTER] = getString(R.string.CENTER)
-                dict[Gravity.START] = getString(R.string.START)
-                dict[Gravity.END] = getString(R.string.END)
-                TextWithSpinner(TextV(textId = R.string.Gravity), SpinnerV(dict[Gravity.START]!!) {
-                    dict.forEach { (key, value) -> add(value) { config.setGravity(key) } }
-                })
+
                 Line()
                 TitleText(textId = R.string.AdvancedFeatures)
                 TextS(textId = R.string.Pad, key = "Pad")
                 TextS(textId = R.string.Shortcuts, key = "Shortcuts")
+                TextS(textId = R.string.UnlockGrids, key = "UnlockGrids")
                 Line()
                 TitleText(textId = R.string.Customize)
                 TextA(textId = R.string.Color, onClickListener = {
@@ -93,7 +88,13 @@ class SettingsActivity : MIUIActivity() {
                         setLButton(R.string.Cancel) { dismiss() }
                     }.show()
                 })
-                Line()
+                val dict: HashMap<Int, String> = hashMapOf()
+                dict[Gravity.CENTER] = getString(R.string.CENTER)
+                dict[Gravity.START] = getString(R.string.START)
+                dict[Gravity.END] = getString(R.string.END)
+                TextWithSpinner(TextV(textId = R.string.Gravity), SpinnerV(dict[Gravity.START]!!) {
+                    dict.forEach { (key, value) -> add(value) { config.setGravity(key) } }
+                })
                 TextA(textId = R.string.LeftMargin0, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.LeftMargin0)

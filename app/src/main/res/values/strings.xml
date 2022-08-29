@@ -37,7 +37,8 @@
     <string name="InputError">输入范围不正确！</string>
     <string name="Pad">强开平板模式(需要安装平板的桌面)</string>
     <string name="Shortcuts">解除Shortcuts限制</string>
-    <string name="Color">歌词颜色和透明度</string>
+    <string name="UnlockGrids">解除桌面布局限制</string>
+    <string name="Color">字体颜色和透明度</string>
     <string name="LyricColorError">颜色代码不正确!</string>
     <string name="LyricColorTips">请输入 16 进制颜色代码，例如: #C0C0C0</string>
     <string name="BackgroundColor">背景颜色和透明度</string>
