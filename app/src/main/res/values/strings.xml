@@ -44,6 +44,6 @@
     <string name="BackgroundColor">背景颜色和透明度</string>
     <string name="Gravity">内部对齐方式</string>
     <string name="CENTER">居中对齐</string>
-    <string name="START">靠右对齐</string>
-    <string name="END">靠左对齐</string>
+    <string name="START">靠左对齐</string>
+    <string name="END">靠右对齐</string>
 </resources>
