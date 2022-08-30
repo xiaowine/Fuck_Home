@@ -167,7 +167,7 @@ class SettingsActivity : MIUIActivity() {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (0..100)) {
+                                    if (value in (-100..100)) {
                                         ActivityOwnSP.ownSPConfig.setValue("LeftMargin0", value)
                                         dismiss()
                                         return@setRButton
@@ -191,7 +191,7 @@ class SettingsActivity : MIUIActivity() {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (0..100)) {
+                                    if (value in (-100..100)) {
                                         ActivityOwnSP.ownSPConfig.setValue("TopMargin0", value)
                                         dismiss()
                                         return@setRButton
@@ -215,7 +215,7 @@ class SettingsActivity : MIUIActivity() {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (-900..900)) {
+                                    if (value in (-100..100)) {
                                         ActivityOwnSP.ownSPConfig.setValue("LeftMargin1", value)
                                         dismiss()
                                         return@setRButton
@@ -239,7 +239,7 @@ class SettingsActivity : MIUIActivity() {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (-900..900)) {
+                                    if (value in (-100..100)) {
                                         ActivityOwnSP.ownSPConfig.setValue("TopMargin1", value)
                                         dismiss()
                                         return@setRButton
