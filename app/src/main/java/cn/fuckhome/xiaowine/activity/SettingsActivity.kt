@@ -1,10 +1,11 @@
 package cn.fuckhome.xiaowine.activity
 
-import android.content.ComponentName
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import cn.aodlyric.xiaowine.utils.ActivityUtils
 import cn.fkj233.ui.activity.MIUIActivity
@@ -16,7 +17,9 @@ import cn.fuckhome.xiaowine.R
 import cn.fuckhome.xiaowine.utils.ActivityOwnSP.ownSPConfig as config
 import cn.fuckhome.xiaowine.utils.ActivityOwnSP
 import cn.fuckhome.xiaowine.utils.BackupUtils
+import cn.fuckhome.xiaowine.utils.FileUtils
 import cn.fuckhome.xiaowine.utils.Utils
+import cn.fuckhome.xiaowine.utils.Utils.isNotNull
 import com.jaredrummler.ktsh.Shell
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,6 +27,7 @@ import kotlin.system.exitProcess
 
 class SettingsActivity : MIUIActivity() {
     private val activity = this
+    private val openFontFile = 1511
 
     init {
         initView {
@@ -36,7 +40,6 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
-
                 Line()
                 TitleText(textId = R.string.AdvancedFeatures)
                 TextS(textId = R.string.Pad, key = "Pad")
@@ -86,6 +89,26 @@ class SettingsActivity : MIUIActivity() {
                             dismiss()
                         }
                         setLButton(R.string.Cancel) { dismiss() }
+                    }.show()
+                })
+                TextA(textId = R.string.CustomFont, onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.CustomFont)
+                        setRButton(R.string.ChooseFont) {
+                            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                            intent.addCategory(Intent.CATEGORY_OPENABLE)
+                            intent.type = "*/*"
+                            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+                            startActivityForResult(intent, openFontFile)
+                            dismiss()
+                        }
+                        setLButton(R.string.Reset) {
+                            application.sendBroadcast(Intent().apply {
+                                action = "MIUIHOME_Server"
+                                putExtra("Type", "delete_font")
+                            })
+                            dismiss()
+                        }
                     }.show()
                 })
                 val dict: HashMap<Int, String> = hashMapOf()
@@ -218,8 +241,8 @@ class SettingsActivity : MIUIActivity() {
                 TextA(textId = R.string.ReStartHome, onClickListener = {
                     Thread { Shell("su").run("am force-stop com.miui.home") }.start()
                 })
-                TextA(textId = R.string.Backup, onClickListener = { getSP()?.let { BackupUtils.backup(activity, it) } })
-                TextA(textId = R.string.Recovery, onClickListener = { getSP()?.let { BackupUtils.recovery(activity, it) } })
+                TextA(textId = R.string.Backup, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
+                TextA(textId = R.string.Recovery, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
                 Line()
                 TextSummary(textId = R.string.ModulePackName, tips = BuildConfig.APPLICATION_ID)
                 TextSummary(textId = R.string.ModuleVersion, tips = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})-${BuildConfig.BUILD_TYPE}")
@@ -230,18 +253,44 @@ class SettingsActivity : MIUIActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data.isNotNull() && resultCode == RESULT_OK) {
+            when (requestCode) {
+                BackupUtils.CREATE_DOCUMENT_CODE -> {
+                    BackupUtils.handleCreateDocument(activity, data!!.data)
+                }
+
+                BackupUtils.OPEN_DOCUMENT_CODE -> {
+                    BackupUtils.handleReadDocument(activity, data!!.data)
+                }
+
+                openFontFile -> {
+                    data!!.data?.let {
+                        activity.sendBroadcast(Intent().apply {
+                            action = "MIUIHOME_Server"
+                            putExtra("Type", "copy_font")
+                            putExtra("Font_Path", FileUtils(activity).getFilePathByUri(it))
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityOwnSP.activity = this
         if (!checkLSPosed()) isLoad = false
         super.onCreate(savedInstanceState)
-
-        if (isLoad && BuildConfig.DEBUG) {
-            ActivityOwnSP.ownSPConfig.setValue("MemoryView", true)
-            ActivityOwnSP.ownSPConfig.setValue("ZarmView", true)
-            ActivityOwnSP.ownSPConfig.setValue("MainSwitch", true)
-            ActivityOwnSP.ownSPConfig.setValue("Debug", true)
+        if (isLoad) {
+            registerReceiver(AppReceiver(), IntentFilter().apply { addAction("MIUIHOME_App_Server") })
+            if (BuildConfig.DEBUG) {
+                ActivityOwnSP.ownSPConfig.setValue("MemoryView", true)
+                ActivityOwnSP.ownSPConfig.setValue("ZarmView", true)
+                ActivityOwnSP.ownSPConfig.setValue("MainSwitch", true)
+                ActivityOwnSP.ownSPConfig.setValue("Debug", true)
+            }
         }
-
     }
 
     private fun checkLSPosed(): Boolean {
@@ -264,4 +313,40 @@ class SettingsActivity : MIUIActivity() {
         }
     }
 
+    inner class AppReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                Handler(Looper.getMainLooper()).post {
+                    when (intent.getStringExtra("app_Type")) {
+                        "CopyFont" -> {
+                            val message: String = if (intent.getBooleanExtra("CopyFont", false)) {
+                                getString(R.string.CustomFontSuccess)
+                            } else {
+                                getString(R.string.CustomFoneFail) + "\n" + intent.getStringExtra("font_error")
+                            }
+                            MIUIDialog(activity) {
+                                setTitle(getString(R.string.CustomFont))
+                                setMessage(message)
+                                setRButton(getString(R.string.Ok)) { dismiss() }
+                            }.show()
+                        }
+
+                        "DeleteFont" -> {
+                            val message: String = if (intent.getBooleanExtra("DeleteFont", false)) {
+                                getString(R.string.DeleteFontSuccess)
+                            } else {
+                                getString(R.string.DeleteFoneFail)
+                            }
+                            MIUIDialog(activity) {
+                                setTitle(getString(R.string.DeleteFont))
+                                setMessage(message)
+                                setRButton(getString(R.string.Ok)) { dismiss() }
+                            }.show()
+                        }
+                    }
+                }
+            } catch (_: Throwable) {
+            }
+        }
+    }
 }

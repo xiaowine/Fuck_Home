@@ -28,7 +28,7 @@ import android.app.Activity
 @SuppressLint("StaticFieldLeak")
 object ActivityOwnSP {
     lateinit var activity: Activity
-    private val ownSP by lazy { Utils.getSP(activity, "Fuck_Home_Config")!! }
+    val ownSP by lazy { Utils.getSP(activity, "Fuck_Home_Config")!! }
     val ownSPConfig by lazy { Config(ownSP) }
     private val ownEditor by lazy { ownSP.edit() }
 
