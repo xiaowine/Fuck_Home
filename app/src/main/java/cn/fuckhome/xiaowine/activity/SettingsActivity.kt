@@ -33,6 +33,50 @@ class SettingsActivity : MIUIActivity() {
         initView {
             registerMain(getString(R.string.AppName), false) {
                 TextS(textId = R.string.MainSwitch, key = "MainSwitch")
+                Line()
+                TextA(textId = R.string.AddInformation, onClickListener = { showFragment("AddInformation") })
+                TextA(textId = R.string.AddInformationStyle, onClickListener = { showFragment("AddInformationStyle") })
+                Line()
+                TextA(textId = R.string.Unrestricted, onClickListener = { showFragment("Unrestricted") })
+                Text()
+            }
+            registerMenu(getString(R.string.Menu)) {
+                TextS(textId = R.string.HideDeskIcon, key = "hLauncherIcon", onClickListener = {
+                    packageManager.setComponentEnabledSetting(ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"), if (it) {
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                    } else {
+                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                    }, PackageManager.DONT_KILL_APP)
+                })
+                TextS(textId = R.string.DebugMode, key = "Debug")
+                TextA(textId = R.string.ResetModule, onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.ResetModuleDialog)
+                        setMessage(R.string.ResetModuleDialogTips)
+                        setLButton(R.string.Ok) {
+                            ActivityOwnSP.ownSPConfig.clear()
+                            ActivityUtils.showToastOnLooper(activity, activity.getString(R.string.ResetSuccess))
+                            activity.finishActivity(0)
+                            dismiss()
+                        }
+                        setRButton(R.string.Cancel) { dismiss() }
+                    }.show()
+                })
+                TextA(textId = R.string.ReStartHome, onClickListener = {
+                    Thread { Shell("su").run("am force-stop com.miui.home") }.start()
+                })
+                TextA(textId = R.string.Backup, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
+                TextA(textId = R.string.Recovery, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
+                Line()
+                TextSummary(textId = R.string.ModulePackName, tips = BuildConfig.APPLICATION_ID)
+                TextSummary(textId = R.string.ModuleVersion, tips = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})-${BuildConfig.BUILD_TYPE}")
+                val buildTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(BuildConfig.BUILD_TIME.toLong())
+                TextSummary(textId = R.string.BuildTime, tips = buildTime)
+                Text()
+            }
+
+            register("AddInformation", getString(R.string.AddInformation), false) {
+
                 TextS(textId = R.string.MemoryView, key = "MemoryView")
                 TextS(textId = R.string.ZarmView, key = "ZarmView")
                 TextS(textId = R.string.StorageView, key = "StorageView")
@@ -40,13 +84,9 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
-                Line()
-                TitleText(textId = R.string.AdvancedFeatures)
-                TextS(textId = R.string.Pad, key = "Pad")
-                TextS(textId = R.string.Shortcuts, key = "Shortcuts")
-                TextS(textId = R.string.UnlockGrids, key = "UnlockGrids")
-                Line()
-                TitleText(textId = R.string.Customize)
+
+            }
+            register("AddInformationStyle", getString(R.string.AddInformationStyle), false) {
                 TextA(textId = R.string.Color, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.Color)
@@ -214,41 +254,11 @@ class SettingsActivity : MIUIActivity() {
                         setLButton(R.string.Cancel) { dismiss() }
                     }.show()
                 })
-                Text()
             }
-            registerMenu(getString(R.string.Menu)) {
-                TextS(textId = R.string.HideDeskIcon, key = "hLauncherIcon", onClickListener = {
-                    packageManager.setComponentEnabledSetting(ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"), if (it) {
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                    } else {
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                    }, PackageManager.DONT_KILL_APP)
-                })
-                TextS(textId = R.string.DebugMode, key = "Debug")
-                TextA(textId = R.string.ResetModule, onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.ResetModuleDialog)
-                        setMessage(R.string.ResetModuleDialogTips)
-                        setLButton(R.string.Ok) {
-                            ActivityOwnSP.ownSPConfig.clear()
-                            ActivityUtils.showToastOnLooper(activity, activity.getString(R.string.ResetSuccess))
-                            activity.finishActivity(0)
-                            dismiss()
-                        }
-                        setRButton(R.string.Cancel) { dismiss() }
-                    }.show()
-                })
-                TextA(textId = R.string.ReStartHome, onClickListener = {
-                    Thread { Shell("su").run("am force-stop com.miui.home") }.start()
-                })
-                TextA(textId = R.string.Backup, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
-                TextA(textId = R.string.Recovery, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
-                Line()
-                TextSummary(textId = R.string.ModulePackName, tips = BuildConfig.APPLICATION_ID)
-                TextSummary(textId = R.string.ModuleVersion, tips = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})-${BuildConfig.BUILD_TYPE}")
-                val buildTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(BuildConfig.BUILD_TIME.toLong())
-                TextSummary(textId = R.string.BuildTime, tips = buildTime)
-                Text()
+            register("Unrestricted", getString(R.string.Unrestricted), false) {
+                TextS(textId = R.string.Pad, key = "Pad")
+                TextS(textId = R.string.Shortcuts, key = "Shortcuts")
+                TextS(textId = R.string.UnlockGrids, key = "UnlockGrids")
             }
         }
     }
