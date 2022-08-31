@@ -14,6 +14,7 @@ import android.graphics.Typeface
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Interpolator
 import android.widget.*
 import cn.fuckhome.xiaowine.hook.BaseHook
 import cn.fuckhome.xiaowine.utils.FileUtils
@@ -25,6 +26,7 @@ import cn.fuckhome.xiaowine.utils.Utils.formatSize
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import com.github.kyuubiran.ezxhelper.utils.*
 import java.io.File
+import kotlin.math.cos
 import kotlin.math.roundToInt
 
 @SuppressLint("StaticFieldLeak")
@@ -100,9 +102,11 @@ object AddInfo : BaseHook() {
             }
         }
         if (XConfig.getBoolean("optimizeAnimation")) {
-            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onApplyWindowInsets" }.hookAfter {
+            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
                 LogUtils.i("refreshMemoryInfo")
                 mLinearLayout.visibility = View.VISIBLE
+
+
             }
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
                 LogUtils.i("startRecentsContainerFadeOutAnim")
@@ -113,6 +117,7 @@ object AddInfo : BaseHook() {
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
                 LogUtils.i("updateRotation")
+                mLinearLayout.animate().alpha(1.0f).setStartDelay(0L).setDuration(0L).setInterpolator(SineEaseInOutInterpolator()).start()
                 val mResentsContainerRotation = it.args[0] as Int
                 val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 if (mResentsContainerRotation == 0) {
@@ -170,6 +175,12 @@ object AddInfo : BaseHook() {
 //        广播
         runCatching { appContext.unregisterReceiver(moduleReceiver) }
         appContext.registerReceiver(moduleReceiver, IntentFilter().apply { addAction("MIUIHOME_Server") })
+    }
+
+    class SineEaseInOutInterpolator : Interpolator {
+        override fun getInterpolation(f: Float): Float {
+            return (cos(f * 3.141592653589793) - 1.0).toFloat() * -0.5f
+        }
     }
 
     class ModuleReceiver : BroadcastReceiver() {
