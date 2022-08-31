@@ -77,9 +77,9 @@ class SettingsActivity : MIUIActivity() {
 
             register("AddInformation", getString(R.string.AddInformation), false) {
 
-                TextS(textId = R.string.MemoryView, key = "MemoryView")
-                TextS(textId = R.string.ZarmView, key = "ZarmView")
-                TextS(textId = R.string.StorageView, key = "StorageView")
+                TextS(textId = R.string.Memory, key = "MemoryView")
+                TextS(textId = R.string.Zarm, key = "ZarmView")
+                TextS(textId = R.string.Storage, key = "StorageView")
                 TextS(textId = R.string.BootTime, key = "BootTime")
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
@@ -333,7 +333,7 @@ class SettingsActivity : MIUIActivity() {
                             val message: String = if (intent.getBooleanExtra("CopyFont", false)) {
                                 getString(R.string.CustomFontSuccess)
                             } else {
-                                getString(R.string.CustomFoneFail) + "\n" + intent.getStringExtra("font_error")
+                                getString(R.string.CustomFontFail) + "\n" + intent.getStringExtra("font_error")
                             }
                             MIUIDialog(activity) {
                                 setTitle(getString(R.string.CustomFont))
@@ -346,7 +346,7 @@ class SettingsActivity : MIUIActivity() {
                             val message: String = if (intent.getBooleanExtra("DeleteFont", false)) {
                                 getString(R.string.DeleteFontSuccess)
                             } else {
-                                getString(R.string.DeleteFoneFail)
+                                getString(R.string.DeleteFontFail)
                             }
                             MIUIDialog(activity) {
                                 setTitle(getString(R.string.DeleteFont))

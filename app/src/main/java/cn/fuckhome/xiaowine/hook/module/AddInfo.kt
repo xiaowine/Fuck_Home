@@ -14,8 +14,10 @@ import android.graphics.Typeface
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Interpolator
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.TextView
+import cn.fuckhome.xiaowine.R
 import cn.fuckhome.xiaowine.hook.BaseHook
 import cn.fuckhome.xiaowine.utils.FileUtils
 import cn.fuckhome.xiaowine.utils.LogUtils
@@ -24,9 +26,9 @@ import cn.fuckhome.xiaowine.utils.Utils
 import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import cn.fuckhome.xiaowine.utils.Utils.formatSize
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
+import com.github.kyuubiran.ezxhelper.init.InitFields.moduleRes
 import com.github.kyuubiran.ezxhelper.utils.*
 import java.io.File
-import kotlin.math.cos
 import kotlin.math.roundToInt
 
 @SuppressLint("StaticFieldLeak")
@@ -43,16 +45,18 @@ object AddInfo : BaseHook() {
     private val widthPixels = metrics.widthPixels
     private val heightPixels = metrics.heightPixels
 
-    const val threshold = 50
+    const val threshold = 20
 
     private val moduleReceiver by lazy { ModuleReceiver() }
 
-    @SuppressLint("SetTextI18n")
+
     override fun init() {
         val resourceId: Int = appContext.resources.getIdentifier("status_bar_height", "dimen", "android")
         height = appContext.resources.getDimensionPixelSize(resourceId)
+
 //        初始化根控件
         findConstructor("com.miui.home.recents.views.RecentsContainer") { parameterCount == 2 }.hookAfter {
+            LogUtils.i(moduleRes.getString(R.string.InitRootView))
             val mView = it.thisObject as FrameLayout
             mLinearLayout = LinearLayout(appContext).apply {
                 orientation = LinearLayout.VERTICAL
@@ -62,19 +66,17 @@ object AddInfo : BaseHook() {
             }
             mView.addView(mLinearLayout)
             listOf("MemoryView", "ZarmView", "StorageView", "BootTime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
-                LogUtils.i(XConfig.getBoolean(s))
                 if (XConfig.getBoolean(s)) {
                     TextViewList.add(s)
                 }
-                LogUtils.i(TextViewList)
             }
         }
+
 //        初始化添加控件
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "onFinishInflate" }.hookAfter {
-                LogUtils.i("onFinishInflate")
+                LogUtils.i(moduleRes.getString(R.string.InitAddView))
                 val mTxtMemoryViewGroup = it.thisObject.getObjectAs<ViewGroup>("mTxtMemoryContainer")
-//                mTxtMemoryViewGroup.setBackgroundColor(Color.BLUE)
                 it.thisObject.putObject("mSeparatorForMemoryInfo", View(appContext))
                 for (i in 0 until mTxtMemoryViewGroup.childCount) {
                     mTxtMemoryViewGroup.getChildAt(i).visibility = View.GONE
@@ -85,7 +87,6 @@ object AddInfo : BaseHook() {
                 TextViewMaps.apply {
                     TextViewList.forEach { name ->
                         val view = TextView(appContext).apply {
-                            LogUtils.i("Init view $name")
                             setBackgroundColor(Color.parseColor(XConfig.getBgColor()))
                             Utils.viewColor(this, null)
                             gravity = XConfig.getGravity()
@@ -101,23 +102,11 @@ object AddInfo : BaseHook() {
 
             }
         }
-        if (XConfig.getBoolean("optimizeAnimation")) {
-            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
-                LogUtils.i("refreshMemoryInfo")
-                mLinearLayout.visibility = View.VISIBLE
 
-
-            }
-            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
-                LogUtils.i("startRecentsContainerFadeOutAnim")
-                mLinearLayout.visibility = View.GONE
-            }
-        }
 //        刷新数据
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
-                LogUtils.i("updateRotation")
-                mLinearLayout.animate().alpha(1.0f).setStartDelay(0L).setDuration(0L).setInterpolator(SineEaseInOutInterpolator()).start()
+                LogUtils.i(moduleRes.getString(R.string.UpdateView))
                 val mResentsContainerRotation = it.args[0] as Int
                 val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 if (mResentsContainerRotation == 0) {
@@ -131,38 +120,36 @@ object AddInfo : BaseHook() {
                 val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
                 val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
                 val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
-//                val a= Settings.System.getInt(appContext.contentResolver, Settings.System.SCREEN_OFF_TIMEOUT)
 
 //                status color
                 TextViewMaps.forEach { (name, view) ->
                     when (name) {
                         "MemoryView" -> {
-                            view.text = "运存 ${memoryInfo.availMem.formatSize()} | ${memoryInfo.totalMem.formatSize()} 剩余 ${memoryInfo.percentValue}%"
+                            view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
                             Utils.viewColor(view, memoryInfo)
                         }
 
                         "ZarmView" -> {
-                            view.text = "虚拟 ${swapInfo.availMem.formatSize()} | ${swapInfo.totalMem.formatSize()} 剩余 ${swapInfo.percentValue}%"
+                            view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
                             Utils.viewColor(view, swapInfo)
-
                         }
 
                         "StorageView" -> {
-                            view.text = "存储 ${storageInfo.availMem.formatSize()} | ${storageInfo.totalMem.formatSize()} 剩余 ${storageInfo.percentValue}%"
+                            view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
                             Utils.viewColor(view, storageInfo)
-
                         }
 
                         "BootTime" -> {
-                            view.text = "已开机时长 ${Utils.BootTime.get()}"
+
+                            view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.BootTime.get())
                         }
 
                         "RunningAppTotal" -> {
-                            view.text = "运行中应用总数 ${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size}"
+                            view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
                         }
 
                         "RunningServiceTotal" -> {
-                            view.text = "运行中服务总数 ${(appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size}"
+                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
                         }
 
                     }
@@ -172,23 +159,33 @@ object AddInfo : BaseHook() {
 
             }
         }
+
+//        动态隐藏以优化动画
+        if (XConfig.getBoolean("optimizeAnimation")) {
+            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
+                LogUtils.i(moduleRes.getString(R.string.VisibleView))
+                mLinearLayout.visibility = View.VISIBLE
+
+
+            }
+            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
+                LogUtils.i(moduleRes.getString(R.string.GoneView))
+                mLinearLayout.visibility = View.GONE
+            }
+        }
+
 //        广播
         runCatching { appContext.unregisterReceiver(moduleReceiver) }
         appContext.registerReceiver(moduleReceiver, IntentFilter().apply { addAction("MIUIHOME_Server") })
     }
 
-    class SineEaseInOutInterpolator : Interpolator {
-        override fun getInterpolation(f: Float): Float {
-            return (cos(f * 3.141592653589793) - 1.0).toFloat() * -0.5f
-        }
-    }
 
     class ModuleReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Utils.catchNoClass {
                 when (intent.getStringExtra("Type")) {
                     "copy_font" -> {
-                        LogUtils.i("自定义字体")
+                        LogUtils.i(moduleRes.getString(R.string.CustomFont))
                         val path = intent.getStringExtra("Font_Path")
                         if (path.isNullOrEmpty()) return@catchNoClass
                         val file = File(appContext.filesDir.path + "/font")
@@ -200,7 +197,7 @@ object AddInfo : BaseHook() {
                             TextViewMaps.forEach { (_, view) ->
                                 view.typeface = Typeface.createFromFile(appContext.filesDir.path + "/font")
                             }
-                            LogUtils.i("自定义字体成功")
+                            LogUtils.i(moduleRes.getString(R.string.CustomFontSuccess))
                             appContext.sendBroadcast(Intent().apply {
                                 action = "MIUIHOME_App_Server"
                                 putExtra("app_Type", "CopyFont")
@@ -211,7 +208,7 @@ object AddInfo : BaseHook() {
                                 val file1 = File(appContext.filesDir.path + "/font")
                                 if (file1.exists() && file1.canWrite()) {
                                     file1.delete()
-                                    LogUtils.i("自定义字体失败")
+                                    LogUtils.i(moduleRes.getString(R.string.CustomFontFail))
                                 }
                             }
                             appContext.sendBroadcast(Intent().apply {
@@ -223,7 +220,7 @@ object AddInfo : BaseHook() {
                     }
 
                     "delete_font" -> {
-                        LogUtils.i("恢复字体")
+                        LogUtils.i(moduleRes.getString(R.string.DeleteFont))
                         var isOK = false
                         val file = File(appContext.filesDir.path + "/font")
                         if (file.exists() && file.canWrite()) {
