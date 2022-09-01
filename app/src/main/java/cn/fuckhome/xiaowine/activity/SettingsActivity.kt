@@ -37,7 +37,7 @@ class SettingsActivity : MIUIActivity() {
                 TextA(textId = R.string.AddInformation, onClickListener = { showFragment("AddInformation") })
                 TextA(textId = R.string.AddInformationStyle, onClickListener = { showFragment("AddInformationStyle") })
                 Line()
-                TextA(textId = R.string.Unrestricted, onClickListener = { showFragment("Unrestricted") })
+                TextA(textId = R.string.FunModify, onClickListener = { showFragment("Unrestricted") })
                 Text()
             }
             registerMenu(getString(R.string.Menu)) {
@@ -255,10 +255,11 @@ class SettingsActivity : MIUIActivity() {
                     }.show()
                 })
             }
-            register("Unrestricted", getString(R.string.Unrestricted), false) {
+            register("Unrestricted", getString(R.string.FunModify), false) {
                 TextS(textId = R.string.Pad, key = "Pad")
                 TextS(textId = R.string.Shortcuts, key = "Shortcuts")
                 TextS(textId = R.string.UnlockGrids, key = "UnlockGrids")
+                TextS(textId = R.string.HideStatusBar, key = "HideStatusBar")
             }
         }
     }

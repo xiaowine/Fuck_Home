@@ -4,10 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import cn.fuckhome.xiaowine.R
-import cn.fuckhome.xiaowine.hook.module.AddInfo
-import cn.fuckhome.xiaowine.hook.module.ModifyShortcutItemCount
-import cn.fuckhome.xiaowine.hook.module.ModifyUnlockGrids
-import cn.fuckhome.xiaowine.hook.module.ModifyUnlockPad
+import cn.fuckhome.xiaowine.hook.module.*
 import cn.fuckhome.xiaowine.utils.LogUtils
 import cn.fuckhome.xiaowine.utils.Utils
 import cn.fuckhome.xiaowine.utils.Utils.XConfig
@@ -51,6 +48,7 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
                                 ModifyUnlockGrids.init()
                             }
                             AddInfo.init()
+                            ModifyHideStatusBarWhenEnterResents.init()
                             isInit = false
                             LogUtils.i(InitFields.moduleRes.getString(R.string.HookSuccess))
                         }

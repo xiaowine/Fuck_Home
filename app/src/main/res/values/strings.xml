@@ -24,7 +24,7 @@
     <string name="Reset">恢复默认</string>
     <string name="AddInformation">添加信息</string>
     <string name="AddInformationStyle">信息样式自定义</string>
-    <string name="Unrestricted">解除功能限制</string>
+    <string name="FunModify">功能调整区</string>
     <string name="Customize">自定义</string>
     <string name="ResetSuccess">重置成功</string>
     <string name="ReStartHome">重启桌面</string>
@@ -50,6 +50,7 @@
     <string name="Pad">解除平板模式限制(需要安装平板的桌面)</string>
     <string name="Shortcuts">解除Shortcuts限制</string>
     <string name="UnlockGrids">解除桌面布局限制</string>
+    <string name="HideStatusBar">后台界面隐藏状态栏</string>
     <string name="Color">字体颜色和透明度</string>
     <string name="LyricColorError">颜色代码不正确!</string>
     <string name="LyricColorTips">请输入 16 进制颜色代码，例如: #C0C0C0</string>
