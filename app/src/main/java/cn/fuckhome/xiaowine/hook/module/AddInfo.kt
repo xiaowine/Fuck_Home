@@ -38,7 +38,6 @@ object AddInfo : BaseHook() {
 
 
     lateinit var textColors: ColorStateList
-    private var height: Int = 0
     private var TextViewMaps = LinkedHashMap<String, TextView>()
     private var TextViewList = arrayListOf<String>()
     private lateinit var mLinearLayout: LinearLayout
@@ -48,14 +47,13 @@ object AddInfo : BaseHook() {
     private val heightPixels = metrics.heightPixels
     private var topMargin = 0
     private var leftMargin = 0
+
     const val threshold = 20
 
     private val moduleReceiver by lazy { ModuleReceiver() }
 
 
     override fun init() {
-        val resourceId: Int = appContext.resources.getIdentifier("status_bar_height", "dimen", "android")
-        height = appContext.resources.getDimensionPixelSize(resourceId)
 
 //        初始化根控件
         findConstructor("com.miui.home.recents.views.RecentsContainer") { parameterCount == 2 }.hookAfter {
@@ -111,10 +109,10 @@ object AddInfo : BaseHook() {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
                 val mResentsContainerRotation = it.args[0] as Int
                 if (mResentsContainerRotation == 0) {
-                    topMargin = (height + 10 + XConfig.getInt("TopMargin0") / 100.0 * heightPixels).toInt()
-                    leftMargin = (XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
+                    topMargin = (10 + XConfig.getInt("TopMargin0") / 100.0 * heightPixels).toInt()
+                    leftMargin = (10 + XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
                 } else {
-                    topMargin = (height + XConfig.getInt("TopMargin1") / 100.0 * widthPixels).roundToInt()
+                    topMargin = (10 + XConfig.getInt("TopMargin1") / 100.0 * widthPixels).roundToInt()
                     leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
                 }
             }
