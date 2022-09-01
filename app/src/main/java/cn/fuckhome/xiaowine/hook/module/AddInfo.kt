@@ -109,7 +109,6 @@ object AddInfo : BaseHook() {
 //        刷新数据
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
-                LogUtils.i(moduleRes.getString(R.string.UpdateView))
                 val mResentsContainerRotation = it.args[0] as Int
                 if (mResentsContainerRotation == 0) {
                     topMargin = (height + 10 + XConfig.getInt("TopMargin0") / 100.0 * heightPixels).toInt()
@@ -133,7 +132,8 @@ object AddInfo : BaseHook() {
             val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
             val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
 
-//                status color
+
+            LogUtils.i(moduleRes.getString(R.string.UpdateView))
             TextViewMaps.forEach { (name, view) ->
                 when (name) {
                     "MemoryView" -> {
@@ -168,17 +168,13 @@ object AddInfo : BaseHook() {
                 view.width = view.paint.measureText(view.text.toString()).toInt() + 6
             }
 
-            mLinearLayout.visibility = View.VISIBLE
-
             val animation = AlphaAnimation(0f, 1f)
             animation.duration = 300
             mLinearLayout.startAnimation(animation)
+            mLinearLayout.visibility = View.VISIBLE
         }
         findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
             LogUtils.i(moduleRes.getString(R.string.GoneView))
-            val animation = AlphaAnimation(1f, 0f)
-            animation.duration = 300
-            mLinearLayout.startAnimation(animation)
             mLinearLayout.visibility = View.GONE
         }
 
