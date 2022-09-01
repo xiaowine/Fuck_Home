@@ -87,7 +87,6 @@ class SettingsActivity : MIUIActivity() {
 
             }
             register("AddInformationStyle", getString(R.string.AddInformationStyle), false) {
-                TextS(textId = R.string.optimizeAnimation, key = "optimizeAnimation")
                 TextA(textId = R.string.Color, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.Color)

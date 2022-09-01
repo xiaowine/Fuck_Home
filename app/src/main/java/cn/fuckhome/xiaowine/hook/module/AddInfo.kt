@@ -14,6 +14,7 @@ import android.graphics.Typeface
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -31,6 +32,7 @@ import com.github.kyuubiran.ezxhelper.utils.*
 import java.io.File
 import kotlin.math.roundToInt
 
+
 @SuppressLint("StaticFieldLeak")
 object AddInfo : BaseHook() {
 
@@ -44,7 +46,8 @@ object AddInfo : BaseHook() {
     private val metrics = appContext.resources.displayMetrics
     private val widthPixels = metrics.widthPixels
     private val heightPixels = metrics.heightPixels
-
+    private var topMargin = 0
+    private var leftMargin = 0
     const val threshold = 20
 
     private val moduleReceiver by lazy { ModuleReceiver() }
@@ -108,71 +111,77 @@ object AddInfo : BaseHook() {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
                 LogUtils.i(moduleRes.getString(R.string.UpdateView))
                 val mResentsContainerRotation = it.args[0] as Int
-                val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 if (mResentsContainerRotation == 0) {
-                    params.topMargin = (height + 10 + XConfig.getInt("TopMargin0") / 100.0 * heightPixels).toInt()
-                    params.leftMargin = (XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
+                    topMargin = (height + 10 + XConfig.getInt("TopMargin0") / 100.0 * heightPixels).toInt()
+                    leftMargin = (XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
                 } else {
-                    params.topMargin = (height + XConfig.getInt("TopMargin1") / 100.0 * widthPixels).roundToInt()
-                    params.leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
+                    topMargin = (height + XConfig.getInt("TopMargin1") / 100.0 * widthPixels).roundToInt()
+                    leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
                 }
-                mLinearLayout.layoutParams = params
-                val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
-                val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-                val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
-
-//                status color
-                TextViewMaps.forEach { (name, view) ->
-                    when (name) {
-                        "MemoryView" -> {
-                            view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
-                            Utils.viewColor(view, memoryInfo)
-                        }
-
-                        "ZarmView" -> {
-                            view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
-                            Utils.viewColor(view, swapInfo)
-                        }
-
-                        "StorageView" -> {
-                            view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
-                            Utils.viewColor(view, storageInfo)
-                        }
-
-                        "BootTime" -> {
-
-                            view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.BootTime.get())
-                        }
-
-                        "RunningAppTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
-                        }
-
-                        "RunningServiceTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
-                        }
-
-                    }
-                    view.width = view.paint.measureText(view.text.toString()).toInt() + 6
-                }
-
-
             }
         }
 
 //        动态隐藏以优化动画
-        if (XConfig.getBoolean("optimizeAnimation")) {
-            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
-                LogUtils.i(moduleRes.getString(R.string.VisibleView))
-                mLinearLayout.visibility = View.VISIBLE
+        findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
+            LogUtils.i(moduleRes.getString(R.string.VisibleView))
+            val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            params.topMargin = topMargin
+            params.leftMargin = leftMargin
+            mLinearLayout.layoutParams = params
 
+            val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
+            val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
+            val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
 
+//                status color
+            TextViewMaps.forEach { (name, view) ->
+                when (name) {
+                    "MemoryView" -> {
+                        view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
+                        Utils.viewColor(view, memoryInfo)
+                    }
+
+                    "ZarmView" -> {
+                        view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
+                        Utils.viewColor(view, swapInfo)
+                    }
+
+                    "StorageView" -> {
+                        view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
+                        Utils.viewColor(view, storageInfo)
+                    }
+
+                    "BootTime" -> {
+
+                        view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.BootTime.get())
+                    }
+
+                    "RunningAppTotal" -> {
+                        view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
+                    }
+
+                    "RunningServiceTotal" -> {
+                        view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
+                    }
+
+                }
+                view.width = view.paint.measureText(view.text.toString()).toInt() + 6
             }
-            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
-                LogUtils.i(moduleRes.getString(R.string.GoneView))
-                mLinearLayout.visibility = View.GONE
-            }
+
+            mLinearLayout.visibility = View.VISIBLE
+
+            val animation = AlphaAnimation(0f, 1f)
+            animation.duration = 300
+            mLinearLayout.startAnimation(animation)
         }
+        findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
+            LogUtils.i(moduleRes.getString(R.string.GoneView))
+            val animation = AlphaAnimation(1f, 0f)
+            animation.duration = 300
+            mLinearLayout.startAnimation(animation)
+            mLinearLayout.visibility = View.GONE
+        }
+
 
 //        广播
         runCatching { appContext.unregisterReceiver(moduleReceiver) }
