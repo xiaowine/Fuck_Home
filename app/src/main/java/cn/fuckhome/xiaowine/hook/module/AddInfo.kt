@@ -104,21 +104,21 @@ object AddInfo : BaseHook() {
             }
         }
 
-//        刷新数据
+//        调节边距
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
                 val mResentsContainerRotation = it.args[0] as Int
                 if (mResentsContainerRotation == 0) {
-                    topMargin = (10 + XConfig.getInt("TopMargin0") / 100.0 * heightPixels).toInt()
+                    topMargin = (10 + XConfig.getInt("TopMargin0",4) / 100.0 * heightPixels).toInt()
                     leftMargin = (10 + XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
                 } else {
-                    topMargin = (10 + XConfig.getInt("TopMargin1") / 100.0 * widthPixels).roundToInt()
+                    topMargin = (10 + XConfig.getInt("TopMargin1",5) / 100.0 * widthPixels).roundToInt()
                     leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
                 }
             }
         }
 
-//        动态隐藏以优化动画
+//        动态隐藏以优化动画 刷新数据
         findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
             LogUtils.i(moduleRes.getString(R.string.VisibleView))
             val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)

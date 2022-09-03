@@ -54,7 +54,7 @@ class SettingsActivity : MIUIActivity() {
                         setTitle(R.string.ResetModuleDialog)
                         setMessage(R.string.ResetModuleDialogTips)
                         setLButton(R.string.Ok) {
-                            ActivityOwnSP.ownSPConfig.clear()
+                            config.clear()
                             ActivityUtils.showToastOnLooper(activity, activity.getString(R.string.ResetSuccess))
                             activity.finishActivity(0)
                             dismiss()
@@ -162,13 +162,13 @@ class SettingsActivity : MIUIActivity() {
                     MIUIDialog(activity) {
                         setTitle(R.string.LeftMargin0)
                         setMessage(R.string.MarginTips)
-                        setEditText(ActivityOwnSP.ownSPConfig.getInt("LeftMargin0").toString(), "0")
+                        setEditText(config.getInt("LeftMargin0").toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
                                     if (value in (-100..100)) {
-                                        ActivityOwnSP.ownSPConfig.setValue("LeftMargin0", value)
+                                        config.setValue("LeftMargin0", value)
                                         dismiss()
                                         return@setRButton
                                     }
@@ -176,7 +176,7 @@ class SettingsActivity : MIUIActivity() {
                                 }
                             }
                             ActivityUtils.showToastOnLooper(activity, getString(R.string.InputError))
-                            ActivityOwnSP.ownSPConfig.setValue("LeftMargin0", 0)
+                            config.setValue("LeftMargin0", 0)
                             dismiss()
                         }
                         setLButton(R.string.Cancel) { dismiss() }
@@ -186,13 +186,13 @@ class SettingsActivity : MIUIActivity() {
                     MIUIDialog(activity) {
                         setTitle(R.string.TopMargin0)
                         setMessage(R.string.MarginTips)
-                        setEditText(ActivityOwnSP.ownSPConfig.getInt("TopMargin0").toString(), "0")
+                        setEditText(config.getInt("TopMargin0",4).toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
                                     if (value in (-100..100)) {
-                                        ActivityOwnSP.ownSPConfig.setValue("TopMargin0", value)
+                                        config.setValue("TopMargin0", value)
                                         dismiss()
                                         return@setRButton
                                     }
@@ -200,7 +200,7 @@ class SettingsActivity : MIUIActivity() {
                                 }
                             }
                             ActivityUtils.showToastOnLooper(activity, getString(R.string.InputError))
-                            ActivityOwnSP.ownSPConfig.setValue("TopMargin0", 0)
+                            config.setValue("TopMargin0", 0)
                             dismiss()
                         }
                         setLButton(R.string.Cancel) { dismiss() }
@@ -210,13 +210,13 @@ class SettingsActivity : MIUIActivity() {
                     MIUIDialog(activity) {
                         setTitle(R.string.LeftMargin1)
                         setMessage(R.string.MarginTips)
-                        setEditText(ActivityOwnSP.ownSPConfig.getInt("LeftMargin1").toString(), "0")
+                        setEditText(config.getInt("LeftMargin1").toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
                                     if (value in (-100..100)) {
-                                        ActivityOwnSP.ownSPConfig.setValue("LeftMargin1", value)
+                                        config.setValue("LeftMargin1", value)
                                         dismiss()
                                         return@setRButton
                                     }
@@ -224,7 +224,7 @@ class SettingsActivity : MIUIActivity() {
                                 }
                             }
                             ActivityUtils.showToastOnLooper(activity, getString(R.string.InputError))
-                            ActivityOwnSP.ownSPConfig.setValue("LeftMargin1", 0)
+                            config.setValue("LeftMargin1", 0)
                             dismiss()
                         }
                         setLButton(R.string.Cancel) { dismiss() }
@@ -234,13 +234,13 @@ class SettingsActivity : MIUIActivity() {
                     MIUIDialog(activity) {
                         setTitle(R.string.TopMargin1)
                         setMessage(R.string.MarginTips)
-                        setEditText(ActivityOwnSP.ownSPConfig.getInt("TopMargin1").toString(), "0")
+                        setEditText(config.getInt("TopMargin1",4).toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
                                     if (value in (-100..100)) {
-                                        ActivityOwnSP.ownSPConfig.setValue("TopMargin1", value)
+                                        config.setValue("TopMargin1", value)
                                         dismiss()
                                         return@setRButton
                                     }
@@ -248,7 +248,7 @@ class SettingsActivity : MIUIActivity() {
                                 }
                             }
                             ActivityUtils.showToastOnLooper(activity, getString(R.string.InputError))
-                            ActivityOwnSP.ownSPConfig.setValue("TopMargin1", 0)
+                            config.setValue("TopMargin1", 0)
                             dismiss()
                         }
                         setLButton(R.string.Cancel) { dismiss() }
@@ -296,10 +296,10 @@ class SettingsActivity : MIUIActivity() {
         if (isLoad) {
             registerReceiver(AppReceiver(), IntentFilter().apply { addAction("MIUIHOME_App_Server") })
             if (BuildConfig.DEBUG) {
-                ActivityOwnSP.ownSPConfig.setValue("MemoryView", true)
-                ActivityOwnSP.ownSPConfig.setValue("ZarmView", true)
-                ActivityOwnSP.ownSPConfig.setValue("MainSwitch", true)
-                ActivityOwnSP.ownSPConfig.setValue("Debug", true)
+                config.setValue("MemoryView", true)
+                config.setValue("ZarmView", true)
+                config.setValue("MainSwitch", true)
+                config.setValue("Debug", true)
             }
         }
     }
