@@ -23,6 +23,10 @@
     <string name="ChooseFont">选择字体</string>
     <string name="Reset">恢复默认</string>
     <string name="AddInformation">添加信息</string>
+    <string name="About">关于</string>
+    <string name="ThkListTips">感谢名单（不分先后）</string>
+    <string name="AboutTips">摸鱼</string>
+    <string name="Author">作者</string>
     <string name="AddInformationStyle">信息样式自定义</string>
     <string name="FunModify">功能调整区</string>
     <string name="Customize">自定义</string>

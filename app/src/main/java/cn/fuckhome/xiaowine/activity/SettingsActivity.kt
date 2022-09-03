@@ -38,6 +38,8 @@ class SettingsActivity : MIUIActivity() {
                 TextA(textId = R.string.AddInformationStyle, onClickListener = { showFragment("AddInformationStyle") })
                 Line()
                 TextA(textId = R.string.FunModify, onClickListener = { showFragment("Unrestricted") })
+                Line()
+                TextA(textId = R.string.About, onClickListener = { showFragment("About") })
                 Text()
             }
             registerMenu(getString(R.string.Menu)) {
@@ -74,7 +76,19 @@ class SettingsActivity : MIUIActivity() {
                 TextSummary(textId = R.string.BuildTime, tips = buildTime)
                 Text()
             }
-
+            register("About", getString(R.string.About), true) {
+                TitleText(textId = R.string.Author)
+                Author(getDrawable(R.drawable.header_xiaowine)!!, "xiaowine", getString(R.string.AboutTips), onClickListener = { ActivityUtils.openUrl(activity, "https://github.com/xiaowine") })
+                TextA("Coolapk", onClickListener = {ActivityUtils.openUrl(activity,"https://www.coolapk.com/apk/cn.fuckhome.xiaowine")})
+                Line()
+                TextWithSpinner(TextV(textId = R.string.ThkListTips), SpinnerV("") {
+                    add("Xposed") { ActivityUtils.openUrl(activity, "https://github.com/rovo89/Xposed") }
+                    add("LSPosed") { ActivityUtils.openUrl(activity, "https://github.com/LSPosed/LSPosed") }
+                    add("blockmiui") { ActivityUtils.openUrl(activity, "https://github.com/Block-Network/blockmiui") }
+                    add("EzXHelper") { ActivityUtils.openUrl(activity, "https://github.com/KyuubiRan/EzXHelper") }
+                })
+                Text()
+            }
             register("AddInformation", getString(R.string.AddInformation), false) {
 
                 TextS(textId = R.string.Memory, key = "MemoryView")
