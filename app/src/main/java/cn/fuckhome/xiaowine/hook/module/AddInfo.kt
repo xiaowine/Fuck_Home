@@ -15,6 +15,7 @@ import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -168,6 +169,13 @@ object AddInfo : BaseHook() {
 
             val animation = AlphaAnimation(0f, 1f)
             animation.duration = 300
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) {}
+                override fun onAnimationRepeat(animation: Animation) {}
+                override fun onAnimationEnd(animation: Animation) {
+                    mLinearLayout.clearAnimation()
+                }
+            })
             mLinearLayout.startAnimation(animation)
             mLinearLayout.visibility = View.VISIBLE
         }
@@ -177,6 +185,13 @@ object AddInfo : BaseHook() {
             if (mLinearLayout.visibility != View.GONE) {
                 val animation = AlphaAnimation(1f, 0f)
                 animation.duration = 300
+                animation.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) {}
+                    override fun onAnimationRepeat(animation: Animation) {}
+                    override fun onAnimationEnd(animation: Animation) {
+                        mLinearLayout.clearAnimation()
+                    }
+                })
                 mLinearLayout.startAnimation(animation)
                 mLinearLayout.visibility = View.GONE
             }
