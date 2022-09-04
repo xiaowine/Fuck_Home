@@ -109,10 +109,10 @@ object AddInfo : BaseHook() {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
                 val mResentsContainerRotation = it.args[0] as Int
                 if (mResentsContainerRotation == 0) {
-                    topMargin = (10 + XConfig.getInt("TopMargin0",4) / 100.0 * heightPixels).toInt()
+                    topMargin = (10 + XConfig.getInt("TopMargin0", 4) / 100.0 * heightPixels).toInt()
                     leftMargin = (10 + XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
                 } else {
-                    topMargin = (10 + XConfig.getInt("TopMargin1",5) / 100.0 * widthPixels).roundToInt()
+                    topMargin = (10 + XConfig.getInt("TopMargin1", 5) / 100.0 * widthPixels).roundToInt()
                     leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
                 }
             }
@@ -171,9 +171,16 @@ object AddInfo : BaseHook() {
             mLinearLayout.startAnimation(animation)
             mLinearLayout.visibility = View.VISIBLE
         }
+
         findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
             LogUtils.i(moduleRes.getString(R.string.GoneView))
-            mLinearLayout.visibility = View.GONE
+            if (mLinearLayout.visibility != View.GONE) {
+                val animation = AlphaAnimation(1f, 0f)
+                animation.duration = 300
+                mLinearLayout.startAnimation(animation)
+                mLinearLayout.visibility = View.GONE
+            }
+
         }
 
 

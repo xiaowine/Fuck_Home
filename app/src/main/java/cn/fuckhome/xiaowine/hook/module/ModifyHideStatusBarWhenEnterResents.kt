@@ -18,7 +18,7 @@ object ModifyHideStatusBarWhenEnterResents : BaseHook() {
             findMethod("com.miui.home.launcher.DeviceConfig") { name == "keepStatusBarShowingForBetterPerformance" }.hookBefore { it.result = false }
 
         } else {
-            findMethod("com.miui.home.launcher.common.DeviceLevelUtils") { name == "keepStatusBarShowingForBetterPerformance" }.hookBefore { it.result = false }
+            findMethod("com.miui.home.launcher.common.DeviceLevelUtils") { name == "isHideStatusBarWhenEnterRecents" }.hookBefore { it.result = false }
         }
     }
 }
