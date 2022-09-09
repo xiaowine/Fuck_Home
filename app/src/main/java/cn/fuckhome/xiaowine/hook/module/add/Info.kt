@@ -55,21 +55,22 @@ object Info : BaseHook() {
 
 
     override fun init() {
-
 //        初始化根控件
-        findConstructor("com.miui.home.recents.views.RecentsContainer") { parameterCount == 2 }.hookAfter {
-            LogUtils.i(moduleRes.getString(R.string.InitRootView))
-            val mView = it.thisObject as FrameLayout
-            mLinearLayout = LinearLayout(appContext).apply {
-                orientation = LinearLayout.VERTICAL
-                if (XConfig.getBoolean("optimizeAnimation")) {
-                    visibility = View.GONE
+        Utils.catchNoClass {
+            findConstructor("com.miui.home.recents.views.RecentsContainer") { parameterCount == 2 }.hookAfter {
+                LogUtils.i(moduleRes.getString(R.string.InitRootView))
+                val mView = it.thisObject as FrameLayout
+                mLinearLayout = LinearLayout(appContext).apply {
+                    orientation = LinearLayout.VERTICAL
+                    if (XConfig.getBoolean("optimizeAnimation")) {
+                        visibility = View.GONE
+                    }
                 }
-            }
-            mView.addView(mLinearLayout)
-            listOf("MemoryView", "ZarmView", "StorageView", "BootTime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
-                if (XConfig.getBoolean(s)) {
-                    TextViewList.add(s)
+                mView.addView(mLinearLayout)
+                listOf("MemoryView", "ZarmView", "StorageView", "BootTime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
+                    if (XConfig.getBoolean(s)) {
+                        TextViewList.add(s)
+                    }
                 }
             }
         }
@@ -120,70 +121,55 @@ object Info : BaseHook() {
         }
 
 //        动态隐藏以优化动画 刷新数据
-        findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
-            LogUtils.i(moduleRes.getString(R.string.VisibleView))
-            val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-            params.topMargin = topMargin
-            params.leftMargin = leftMargin
-            mLinearLayout.layoutParams = params
+        Utils.catchNoClass {
+            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
+                LogUtils.i(moduleRes.getString(R.string.VisibleView))
+                val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                params.topMargin = topMargin
+                params.leftMargin = leftMargin
+                mLinearLayout.layoutParams = params
 
-            val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
-            val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-            val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
+                val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
+                val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
+                val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
 
 
-            LogUtils.i(moduleRes.getString(R.string.UpdateView))
-            TextViewMaps.forEach { (name, view) ->
-                when (name) {
-                    "MemoryView" -> {
-                        view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
-                        Utils.viewColor(view, memoryInfo)
+                LogUtils.i(moduleRes.getString(R.string.UpdateView))
+                TextViewMaps.forEach { (name, view) ->
+                    when (name) {
+                        "MemoryView" -> {
+                            view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
+                            Utils.viewColor(view, memoryInfo)
+                        }
+
+                        "ZarmView" -> {
+                            view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
+                            Utils.viewColor(view, swapInfo)
+                        }
+
+                        "StorageView" -> {
+                            view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
+                            Utils.viewColor(view, storageInfo)
+                        }
+
+                        "BootTime" -> {
+
+                            view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.BootTime.get())
+                        }
+
+                        "RunningAppTotal" -> {
+                            view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
+                        }
+
+                        "RunningServiceTotal" -> {
+                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
+                        }
+
                     }
-
-                    "ZarmView" -> {
-                        view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
-                        Utils.viewColor(view, swapInfo)
-                    }
-
-                    "StorageView" -> {
-                        view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
-                        Utils.viewColor(view, storageInfo)
-                    }
-
-                    "BootTime" -> {
-
-                        view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.BootTime.get())
-                    }
-
-                    "RunningAppTotal" -> {
-                        view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
-                    }
-
-                    "RunningServiceTotal" -> {
-                        view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
-                    }
-
+                    view.width = view.paint.measureText(view.text.toString()).toInt() + 6
                 }
-                view.width = view.paint.measureText(view.text.toString()).toInt() + 6
-            }
 
-            val animation = AlphaAnimation(0f, 1f)
-            animation.duration = 300
-            animation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) {}
-                override fun onAnimationRepeat(animation: Animation) {}
-                override fun onAnimationEnd(animation: Animation) {
-                    mLinearLayout.clearAnimation()
-                }
-            })
-            mLinearLayout.startAnimation(animation)
-            mLinearLayout.visibility = View.VISIBLE
-        }
-
-        findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
-            LogUtils.i(moduleRes.getString(R.string.GoneView))
-            if (mLinearLayout.visibility != View.GONE) {
-                val animation = AlphaAnimation(1f, 0f)
+                val animation = AlphaAnimation(0f, 1f)
                 animation.duration = 300
                 animation.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(animation: Animation) {}
@@ -193,14 +179,33 @@ object Info : BaseHook() {
                     }
                 })
                 mLinearLayout.startAnimation(animation)
-                mLinearLayout.visibility = View.GONE
+                mLinearLayout.visibility = View.VISIBLE
             }
+        }
 
+        Utils.catchNoClass {
+            findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
+                LogUtils.i(moduleRes.getString(R.string.GoneView))
+                if (mLinearLayout.visibility != View.GONE) {
+                    val animation = AlphaAnimation(1f, 0f)
+                    animation.duration = 300
+                    animation.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation) {}
+                        override fun onAnimationRepeat(animation: Animation) {}
+                        override fun onAnimationEnd(animation: Animation) {
+                            mLinearLayout.clearAnimation()
+                        }
+                    })
+                    mLinearLayout.startAnimation(animation)
+                    mLinearLayout.visibility = View.GONE
+                }
+
+            }
         }
 
 
 //        广播
-        runCatching { appContext.unregisterReceiver(moduleReceiver) }
+        Utils.catchNoClass { appContext.unregisterReceiver(moduleReceiver) }
         appContext.registerReceiver(moduleReceiver, IntentFilter().apply { addAction("MIUIHOME_Server") })
     }
 

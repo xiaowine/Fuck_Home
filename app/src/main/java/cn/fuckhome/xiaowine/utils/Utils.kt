@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.SystemClock
 import android.text.format.Formatter
+import android.util.Log
 import android.widget.TextView
 import cn.fuckhome.xiaowine.BuildConfig
 import cn.fuckhome.xiaowine.config.Config
@@ -70,12 +71,8 @@ object Utils {
     }
 
     fun catchNoClass(callback: () -> Unit) {
-        try {
-            callback()
-        } catch (e: NoSuchMethodException) {
-            LogUtils.i("${e.message} 未找到class：${callback.javaClass.name}")
-        } catch (e: NullPointerException) {
-            LogUtils.i("${e.message} 未找到class：${callback.javaClass.name}")
+        runCatching { callback() }.exceptionOrNull().let {
+            Log.i(LogUtils.TAG, "${callback.javaClass.simpleName}错误")
         }
     }
 

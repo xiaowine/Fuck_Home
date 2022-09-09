@@ -28,7 +28,7 @@ import de.robv.android.xposed.XposedBridge
 
 object LogUtils {
     private const val maxLength = 4000
-    private const val TAG = "Fuck_Home"
+    const val TAG = "Fuck_Home"
 
 
     private fun log(obj: Any?, toXposed: Boolean = false, toLogd: Boolean = false) {
