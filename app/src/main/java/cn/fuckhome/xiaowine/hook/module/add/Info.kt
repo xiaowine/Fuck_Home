@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package cn.fuckhome.xiaowine.hook.module
+package cn.fuckhome.xiaowine.hook.module.add
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
@@ -35,7 +35,7 @@ import kotlin.math.roundToInt
 
 
 @SuppressLint("StaticFieldLeak")
-object AddInfo : BaseHook() {
+object Info : BaseHook() {
 
 
     lateinit var textColors: ColorStateList

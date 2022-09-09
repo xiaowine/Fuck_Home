@@ -274,6 +274,7 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.Shortcuts, key = "Shortcuts")
                 TextS(textId = R.string.UnlockGrids, key = "UnlockGrids")
                 TextS(textId = R.string.HideStatusBar, key = "HideStatusBar")
+                TextS(textId = R.string.HideAppName, key = "HideAppName")
             }
         }
     }

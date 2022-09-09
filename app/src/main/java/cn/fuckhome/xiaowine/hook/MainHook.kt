@@ -2,18 +2,15 @@ package cn.fuckhome.xiaowine.hook
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import cn.fuckhome.xiaowine.R
-import cn.fuckhome.xiaowine.hook.module.*
+import cn.fuckhome.xiaowine.hook.module.add.Info
+import cn.fuckhome.xiaowine.hook.module.modify.*
 import cn.fuckhome.xiaowine.utils.LogUtils
-import cn.fuckhome.xiaowine.utils.Utils
 import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import cn.fuckhome.xiaowine.utils.hookBeforeMethod
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit
 import com.github.kyuubiran.ezxhelper.init.InitFields
 import com.github.kyuubiran.ezxhelper.utils.Log.logexIfThrow
-import com.github.kyuubiran.ezxhelper.utils.findMethod
-import com.github.kyuubiran.ezxhelper.utils.hookBefore
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -39,16 +36,19 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
                     runCatching {
                         if (isInit) {
                             if (XConfig.getBoolean("Pad")) {
-                                ModifyUnlockPad.init()
+                                UnlockPad.init()
                             }
                             if (XConfig.getBoolean("Shortcuts")) {
-                                ModifyShortcutItemCount.init()
+                                ShortcutItemCount.init()
                             }
                             if (XConfig.getBoolean("UnlockGrids")) {
-                                ModifyUnlockGrids.init()
+                                UnlockGrids.init()
                             }
-                            AddInfo.init()
-                            ModifyHideStatusBarWhenEnterResents.init()
+                            if (XConfig.getBoolean("HideAppName")) {
+                                HideAppName.init()
+                            }
+                            Info.init()
+                            HideStatusBarWhenEnterResents.init()
                             isInit = false
                             LogUtils.i(InitFields.moduleRes.getString(R.string.HookSuccess))
                         }

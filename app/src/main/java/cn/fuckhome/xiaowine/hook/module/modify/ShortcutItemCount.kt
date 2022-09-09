@@ -1,4 +1,4 @@
-package cn.fuckhome.xiaowine.hook.module
+package cn.fuckhome.xiaowine.hook.module.modify
 
 import cn.fuckhome.xiaowine.R
 import cn.fuckhome.xiaowine.hook.BaseHook
@@ -9,7 +9,7 @@ import com.github.kyuubiran.ezxhelper.init.InitFields.moduleRes
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.hookAfter
 
-object ModifyShortcutItemCount : BaseHook() {
+object ShortcutItemCount : BaseHook() {
     override fun init() {
         Utils.catchNoClass {
             LogUtils.i(moduleRes.getString(R.string.Shortcuts))

@@ -55,6 +55,7 @@
     <string name="Shortcuts">解除Shortcuts限制</string>
     <string name="UnlockGrids">解除桌面布局限制</string>
     <string name="HideStatusBar">后台界面隐藏状态栏</string>
+    <string name="HideAppName">隐藏应用名字</string>
     <string name="Color">字体颜色和透明度</string>
     <string name="LyricColorError">颜色代码不正确!</string>
     <string name="LyricColorTips">请输入 16 进制颜色代码，例如: #C0C0C0</string>
@@ -76,5 +77,4 @@
     <string name="BootTimeView">已开机时长 %s</string>
     <string name="RunningAppTotalView">运行中应用总数 %s</string>
     <string name="RunningServiceTotalView">运行中服务总数 %s</string>
-
 </resources>

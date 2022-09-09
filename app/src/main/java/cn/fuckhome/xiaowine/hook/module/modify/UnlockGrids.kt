@@ -1,4 +1,4 @@
-package cn.fuckhome.xiaowine.hook.module
+package cn.fuckhome.xiaowine.hook.module.modify
 
 import cn.fuckhome.xiaowine.R
 import cn.fuckhome.xiaowine.hook.BaseHook
@@ -8,7 +8,7 @@ import com.github.kyuubiran.ezxhelper.init.InitFields
 import com.github.kyuubiran.ezxhelper.utils.findMethod
 import com.github.kyuubiran.ezxhelper.utils.hookBefore
 
-object ModifyUnlockGrids : BaseHook() {
+object UnlockGrids : BaseHook() {
     override fun init() {
         Utils.catchNoClass {
             LogUtils.i(InitFields.moduleRes.getString(R.string.UnlockGrids))
