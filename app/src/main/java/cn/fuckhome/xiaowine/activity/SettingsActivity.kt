@@ -14,6 +14,7 @@ import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import cn.fuckhome.xiaowine.BuildConfig
 import cn.fuckhome.xiaowine.R
+import cn.fuckhome.xiaowine.hook.module.modify.HideAppIcon
 import cn.fuckhome.xiaowine.utils.ActivityOwnSP.ownSPConfig as config
 import cn.fuckhome.xiaowine.utils.ActivityOwnSP
 import cn.fuckhome.xiaowine.utils.BackupUtils
@@ -275,6 +276,7 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.UnlockGrids, key = "UnlockGrids")
                 TextS(textId = R.string.HideStatusBar, key = "HideStatusBar")
                 TextS(textId = R.string.HideAppName, key = "HideAppName")
+                TextS(textId = R.string.HideAppIcon, key = "HideAppIcon")
             }
         }
     }

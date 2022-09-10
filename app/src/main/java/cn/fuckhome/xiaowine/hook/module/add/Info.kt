@@ -120,6 +120,7 @@ object Info : BaseHook() {
             }
         }
 
+
 //        动态隐藏以优化动画 刷新数据
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
