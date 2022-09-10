@@ -16,7 +16,8 @@ import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 private const val PACKAGE_MIUI_HOME = "com.miui.home"
-
+private const val PACKAGE_POCO_HOME = "com.mi.android.globallauncher"
+val homeList = arrayOf(PACKAGE_POCO_HOME, PACKAGE_MIUI_HOME)
 
 class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
     private var isInit: Boolean = true
@@ -28,7 +29,7 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
             return
         }
         when (lpparam.packageName) {
-            PACKAGE_MIUI_HOME -> Application::class.java.hookBeforeMethod("attach", Context::class.java) {
+            in homeList -> Application::class.java.hookBeforeMethod("attach", Context::class.java) {
                 EzXHelperInit.apply {
                     initHandleLoadPackage(lpparam)
                     initAppContext(it.args[0] as Context)
