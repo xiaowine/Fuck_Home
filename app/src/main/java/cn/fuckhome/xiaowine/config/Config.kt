@@ -43,6 +43,12 @@ class Config {
     fun getGravity(): Int {
         return config.optInt("Gravity", Gravity.START)
     }
+    fun setUnit(b: Boolean) {
+        config.put("Unit", b)
+    }
+    fun getUnit(): Boolean {
+        return config.optBoolean("Unit", true)
+    }
 
     fun getString(key: String, def: String = ""): String {
         return config.optString(key, def)

@@ -59,7 +59,7 @@ android {
 
 
 dependencies {
-    implementation("com.github.kyuubiran:EzXHelper:1.0.1")
+    implementation("com.github.kyuubiran:EzXHelper:1.0.3")
     compileOnly("de.robv.android.xposed:api:82")
     implementation(project(":blockmiui"))
     implementation(project(":xtoast"))

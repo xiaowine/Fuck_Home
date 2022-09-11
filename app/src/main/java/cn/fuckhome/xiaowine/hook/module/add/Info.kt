@@ -21,10 +21,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import cn.fuckhome.xiaowine.R
 import cn.fuckhome.xiaowine.hook.BaseHook
-import cn.fuckhome.xiaowine.utils.FileUtils
-import cn.fuckhome.xiaowine.utils.LogUtils
-import cn.fuckhome.xiaowine.utils.MemoryUtils
-import cn.fuckhome.xiaowine.utils.Utils
+import cn.fuckhome.xiaowine.utils.*
 import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import cn.fuckhome.xiaowine.utils.Utils.formatSize
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
@@ -36,8 +33,6 @@ import kotlin.math.roundToInt
 
 @SuppressLint("StaticFieldLeak")
 object Info : BaseHook() {
-
-
     lateinit var textColors: ColorStateList
     private var TextViewMaps = LinkedHashMap<String, TextView>()
     private var TextViewList = arrayListOf<String>()
@@ -67,7 +62,14 @@ object Info : BaseHook() {
                     }
                 }
                 mView.addView(mLinearLayout)
-                listOf("MemoryView", "ZarmView", "StorageView", "BootTime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
+                listOf(
+                    "MemoryView",
+                    "ZarmView",
+                    "StorageView",
+                    "BootTime",
+                    "RunningAppTotal",
+                    "RunningServiceTotal"
+                ).forEach { s ->
                     if (XConfig.getBoolean(s)) {
                         TextViewList.add(s)
                     }
@@ -111,12 +113,29 @@ object Info : BaseHook() {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
                 val mResentsContainerRotation = it.args[0] as Int
                 if (mResentsContainerRotation == 0) {
-                    topMargin = (10 + XConfig.getInt("TopMargin0", 4) / 100.0 * heightPixels).toInt()
-                    leftMargin = (10 + XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
+                    LogUtils.i("aaaa")
+                    if (XConfig.getUnit()) {
+                        topMargin = (10 + XConfig.getInt("TopMargin0", 4) / 100.0 * heightPixels).toInt()
+                        leftMargin = (10 + XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
+                    } else {
+                        LogUtils.i(XConfig.getInt("TopMargin0", 4))
+                        topMargin = 10 + XConfig.getInt("TopMargin0", 4)
+                        leftMargin = 10 + XConfig.getInt("LeftMargin0")
+                    }
                 } else {
-                    topMargin = (10 + XConfig.getInt("TopMargin1", 5) / 100.0 * widthPixels).roundToInt()
-                    leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
+                    LogUtils.i("bbbbb")
+                    if (XConfig.getUnit()) {
+                        topMargin = (10 + XConfig.getInt("TopMargin1", 5) / 100.0 * widthPixels).roundToInt()
+                        leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
+                    } else {
+                        topMargin = 10 + XConfig.getInt("TopMargin1", 5)
+                        leftMargin = 10 + XConfig.getInt("LeftMargin1")
+                    }
+
                 }
+                LogUtils.i(XConfig.getUnit())
+                LogUtils.i(topMargin)
+                LogUtils.i(leftMargin)
             }
         }
 
@@ -125,7 +144,10 @@ object Info : BaseHook() {
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
                 LogUtils.i(moduleRes.getString(R.string.VisibleView))
-                val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                val params = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+                )
                 params.topMargin = topMargin
                 params.leftMargin = leftMargin
                 mLinearLayout.layoutParams = params
@@ -139,17 +161,29 @@ object Info : BaseHook() {
                 TextViewMaps.forEach { (name, view) ->
                     when (name) {
                         "MemoryView" -> {
-                            view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
+                            view.text = moduleRes.getString(R.string.MemoryView).format(
+                                memoryInfo.availMem.formatSize(),
+                                memoryInfo.totalMem.formatSize(),
+                                memoryInfo.percentValue
+                            )
                             Utils.viewColor(view, memoryInfo)
                         }
 
                         "ZarmView" -> {
-                            view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
+                            view.text = moduleRes.getString(R.string.ZarmView).format(
+                                swapInfo.availMem.formatSize(),
+                                swapInfo.totalMem.formatSize(),
+                                swapInfo.percentValue
+                            )
                             Utils.viewColor(view, swapInfo)
                         }
 
                         "StorageView" -> {
-                            view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
+                            view.text = moduleRes.getString(R.string.StorageView).format(
+                                storageInfo.availMem.formatSize(),
+                                storageInfo.totalMem.formatSize(),
+                                storageInfo.percentValue
+                            )
                             Utils.viewColor(view, storageInfo)
                         }
 
@@ -159,11 +193,16 @@ object Info : BaseHook() {
                         }
 
                         "RunningAppTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
+                            view.text = moduleRes.getString(R.string.RunningAppTotalView)
+                                .format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
                         }
 
                         "RunningServiceTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
+                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format(
+                                (appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(
+                                    999
+                                ).size
+                            )
                         }
 
                     }

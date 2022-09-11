@@ -49,7 +49,8 @@
     <string name="LeftMargin0">竖屏左边距</string>
     <string name="TopMargin1">横屏上边距</string>
     <string name="LeftMargin1">横屏左边距</string>
-    <string name="MarginTips">-100%~100%</string>
+    <string name="MarginTips1">范围：-100%~100%</string>
+    <string name="MarginTips2">范围：-2000~2000</string>
     <string name="InputError">输入范围不正确！</string>
     <string name="Pad">解除平板模式限制(需要安装平板的桌面)</string>
     <string name="Shortcuts">解除Shortcuts限制</string>
@@ -64,6 +65,9 @@
     <string name="Gravity">内部对齐方式</string>
     <string name="CENTER">居中对齐</string>
     <string name="START">靠左对齐</string>
+    <string name="UnitMargin">对齐方式单位</string>
+    <string name="Scale">屏幕比例</string>
+    <string name="Pixel">像素点</string>
     <string name="END">靠右对齐</string>
     <string name="InitRootView">初始化根控件</string>
     <string name="InitAddView">初始化添加控件</string>
@@ -72,9 +76,9 @@
     <string name="VisibleView">显示控件</string>
 
 
-    <string name="MemoryView">运存 %s | %s  剩余 %s%%</string>
-    <string name="ZarmView">虚拟 %s | %s  剩余 %s%%</string>
-    <string name="StorageView">存储 %s | %s  剩余 %s%%</string>
+    <string name="MemoryView">运存 %s | %s 剩余 %s%%</string>
+    <string name="ZarmView">虚拟 %s | %s 剩余 %s%%</string>
+    <string name="StorageView">存储 %s | %s 剩余 %s%%</string>
     <string name="BootTimeView">已开机时长 %s</string>
     <string name="RunningAppTotalView">运行中应用总数 %s</string>
     <string name="RunningServiceTotalView">运行中服务总数 %s</string>

@@ -14,7 +14,6 @@ import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import cn.fuckhome.xiaowine.BuildConfig
 import cn.fuckhome.xiaowine.R
-import cn.fuckhome.xiaowine.hook.module.modify.HideAppIcon
 import cn.fuckhome.xiaowine.utils.ActivityOwnSP.ownSPConfig as config
 import cn.fuckhome.xiaowine.utils.ActivityOwnSP
 import cn.fuckhome.xiaowine.utils.BackupUtils
@@ -45,11 +44,13 @@ class SettingsActivity : MIUIActivity() {
             }
             registerMenu(getString(R.string.Menu)) {
                 TextS(textId = R.string.HideDeskIcon, key = "hLauncherIcon", onClickListener = {
-                    packageManager.setComponentEnabledSetting(ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"), if (it) {
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                    } else {
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                    }, PackageManager.DONT_KILL_APP)
+                    packageManager.setComponentEnabledSetting(
+                        ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"), if (it) {
+                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                        } else {
+                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        }, PackageManager.DONT_KILL_APP
+                    )
                 })
                 TextS(textId = R.string.DebugMode, key = "Debug")
                 TextA(textId = R.string.ResetModule, onClickListener = {
@@ -69,18 +70,35 @@ class SettingsActivity : MIUIActivity() {
                     Thread { Shell("su").run("am force-stop com.miui.home") }.start()
                 })
                 TextA(textId = R.string.Backup, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
-                TextA(textId = R.string.Recovery, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
+                TextA(
+                    textId = R.string.Recovery,
+                    onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
                 Line()
                 TextSummary(textId = R.string.ModulePackName, tips = BuildConfig.APPLICATION_ID)
-                TextSummary(textId = R.string.ModuleVersion, tips = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})-${BuildConfig.BUILD_TYPE}")
-                val buildTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(BuildConfig.BUILD_TIME.toLong())
+                TextSummary(
+                    textId = R.string.ModuleVersion,
+                    tips = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})-${BuildConfig.BUILD_TYPE}"
+                )
+                val buildTime =
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(BuildConfig.BUILD_TIME.toLong())
                 TextSummary(textId = R.string.BuildTime, tips = buildTime)
                 Text()
             }
             register("About", getString(R.string.About), true) {
                 TitleText(textId = R.string.Author)
-                Author(getDrawable(R.drawable.header_xiaowine)!!, "xiaowine", getString(R.string.AboutTips), onClickListener = { ActivityUtils.openUrl(activity, "https://github.com/xiaowine") })
-                TextA("Coolapk", onClickListener = {ActivityUtils.openUrl(activity,"https://www.coolapk.com/apk/cn.fuckhome.xiaowine")})
+                Author(
+                    getDrawable(R.drawable.header_xiaowine)!!,
+                    "xiaowine",
+                    getString(R.string.AboutTips),
+                    onClickListener = { ActivityUtils.openUrl(activity, "https://github.com/xiaowine") })
+                TextA(
+                    "Coolapk",
+                    onClickListener = {
+                        ActivityUtils.openUrl(
+                            activity,
+                            "https://www.coolapk.com/apk/cn.fuckhome.xiaowine"
+                        )
+                    })
                 Line()
                 TextWithSpinner(TextV(textId = R.string.ThkListTips), SpinnerV("") {
                     add("Xposed") { ActivityUtils.openUrl(activity, "https://github.com/rovo89/Xposed") }
@@ -173,16 +191,32 @@ class SettingsActivity : MIUIActivity() {
                 TextWithSpinner(TextV(textId = R.string.Gravity), SpinnerV(dict[Gravity.START]!!) {
                     dict.forEach { (key, value) -> add(value) { config.setGravity(key) } }
                 })
+
+                var marginTips = if (config.getUnit()) R.string.MarginTips1 else R.string.MarginTips2
+                var marginRange = if (config.getUnit()) (-100..100) else (-2000..2000)
+                val unit: HashMap<Boolean, String> = hashMapOf()
+                unit[true] = getString(R.string.Scale)
+                unit[false] = getString(R.string.Pixel)
+                TextWithSpinner(TextV(textId = R.string.UnitMargin), SpinnerV(unit[true]!!) {
+                    unit.forEach { (key, value) ->
+                        add(value) {
+                            config.setUnit(key)
+                            marginTips = if (config.getUnit()) R.string.MarginTips1 else R.string.MarginTips2
+                            marginRange = if (config.getUnit()) (-100..100) else (-2000..2000)
+                        }
+                    }
+                })
+
                 TextA(textId = R.string.LeftMargin0, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.LeftMargin0)
-                        setMessage(R.string.MarginTips)
+                        setMessage(marginTips)
                         setEditText(config.getInt("LeftMargin0").toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (-100..100)) {
+                                    if (value in marginRange) {
                                         config.setValue("LeftMargin0", value)
                                         dismiss()
                                         return@setRButton
@@ -200,13 +234,13 @@ class SettingsActivity : MIUIActivity() {
                 TextA(textId = R.string.TopMargin0, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.TopMargin0)
-                        setMessage(R.string.MarginTips)
-                        setEditText(config.getInt("TopMargin0",4).toString(), "0")
+                        setMessage(marginTips)
+                        setEditText(config.getInt("TopMargin0", 4).toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (-100..100)) {
+                                    if (value in marginRange) {
                                         config.setValue("TopMargin0", value)
                                         dismiss()
                                         return@setRButton
@@ -224,13 +258,13 @@ class SettingsActivity : MIUIActivity() {
                 TextA(textId = R.string.LeftMargin1, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.LeftMargin1)
-                        setMessage(R.string.MarginTips)
+                        setMessage(marginTips)
                         setEditText(config.getInt("LeftMargin1").toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (-100..100)) {
+                                    if (value in marginRange) {
                                         config.setValue("LeftMargin1", value)
                                         dismiss()
                                         return@setRButton
@@ -248,13 +282,13 @@ class SettingsActivity : MIUIActivity() {
                 TextA(textId = R.string.TopMargin1, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.TopMargin1)
-                        setMessage(R.string.MarginTips)
-                        setEditText(config.getInt("TopMargin1",4).toString(), "0")
+                        setMessage(marginTips)
+                        setEditText(config.getInt("TopMargin1", 4).toString(), "0")
                         setRButton(R.string.Ok) {
                             if (getEditText().isNotEmpty()) {
                                 try {
                                     val value = getEditText().toInt()
-                                    if (value in (-100..100)) {
+                                    if (value in marginRange) {
                                         config.setValue("TopMargin1", value)
                                         dismiss()
                                         return@setRButton
