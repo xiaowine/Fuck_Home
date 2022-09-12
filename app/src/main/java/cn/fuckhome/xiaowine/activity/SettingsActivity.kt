@@ -68,7 +68,7 @@ class SettingsActivity : MIUIActivity() {
                     Thread { Shell("su").run("am force-stop com.miui.home") }.start()
                 })
                 TextA(textId = R.string.Backup, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
-                TextA(textId = R.string.Recovery, onClickListener = { BackupUtils.backup(activity, ActivityOwnSP.ownSP) })
+                TextA(textId = R.string.Recovery, onClickListener = { BackupUtils.recovery(activity, ActivityOwnSP.ownSP) })
                 Line()
                 TextSummary(textId = R.string.ModulePackName, tips = BuildConfig.APPLICATION_ID)
                 TextSummary(textId = R.string.ModuleVersion, tips = "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})-${BuildConfig.BUILD_TYPE}")
