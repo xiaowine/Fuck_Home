@@ -62,8 +62,8 @@ object Info : BaseHook() {
                         visibility = View.GONE
                     }
                     val gd = GradientDrawable()
-//                    gd.setColor(Color.parseColor(XConfig.getBgColor()))
-                    gd.setColor(Color.BLUE)
+                    gd.setColor(Color.parseColor(XConfig.getBgColor()))
+//                    gd.setColor(Color.BLUE)
                     gd.cornerRadius = XConfig.getBgCorners().toFloat()
                     gd.setStroke(width, Color.BLACK)
                     background = gd
