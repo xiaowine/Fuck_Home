@@ -147,6 +147,30 @@ class SettingsActivity : MIUIActivity() {
                         setLButton(R.string.Cancel) { dismiss() }
                     }.show()
                 })
+                TextA(textId = R.string.BgCorners, onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.BgCorners)
+                        setMessage(R.string.BgCornersTips)
+                        setEditText(config.getBgCorners().toString(), "0")
+                        setRButton(R.string.Ok) {
+                            if (getEditText().isNotEmpty()) {
+                                try {
+                                    val value = getEditText().toInt()
+                                    if (value in (0..100)) {
+                                        config.setBgCorners(value)
+                                        dismiss()
+                                        return@setRButton
+                                    }
+                                } catch (_: Throwable) {
+                                }
+                            }
+                            ActivityUtils.showToastOnLooper(activity, getString(R.string.InputError))
+                            config.setBgCorners(0)
+                            dismiss()
+                        }
+                        setLButton(R.string.Cancel) { dismiss() }
+                    }.show()
+                })
                 TextA(textId = R.string.CustomFont, onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.CustomFont)

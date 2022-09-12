@@ -37,6 +37,13 @@ class Config {
     fun getBgColor(): String {
         return config.optString("BgColor", "#00000000")
     }
+    fun setBgCorners(i: Int) {
+        config.put("BgCorners", i)
+    }
+
+    fun getBgCorners(): Int {
+        return config.optInt("BgCorners", 30)
+    }
     fun setGravity(i: Int) {
         config.put("Gravity", i)
     }

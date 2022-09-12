@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
@@ -60,16 +61,16 @@ object Info : BaseHook() {
                     if (XConfig.getBoolean("optimizeAnimation")) {
                         visibility = View.GONE
                     }
+                    val gd = GradientDrawable()
+//                    gd.setColor(Color.parseColor(XConfig.getBgColor()))
+                    gd.setColor(Color.BLUE)
+                    gd.cornerRadius = XConfig.getBgCorners().toFloat()
+                    gd.setStroke(width, Color.BLACK)
+                    background = gd
                 }
+
                 mView.addView(mLinearLayout)
-                listOf(
-                    "MemoryView",
-                    "ZarmView",
-                    "StorageView",
-                    "BootTime",
-                    "RunningAppTotal",
-                    "RunningServiceTotal"
-                ).forEach { s ->
+                listOf("MemoryView", "ZarmView", "StorageView", "BootTime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
                     if (XConfig.getBoolean(s)) {
                         TextViewList.add(s)
                     }
@@ -92,7 +93,7 @@ object Info : BaseHook() {
                 TextViewMaps.apply {
                     TextViewList.forEach { name ->
                         val view = TextView(appContext).apply {
-                            setBackgroundColor(Color.parseColor(XConfig.getBgColor()))
+//                            setBackgroundColor(Color.parseColor(XConfig.getBgColor()))
                             Utils.viewColor(this, null)
                             gravity = XConfig.getGravity()
                             textSize = 12f
@@ -113,7 +114,6 @@ object Info : BaseHook() {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "updateRotation" }.hookAfter {
                 val mResentsContainerRotation = it.args[0] as Int
                 if (mResentsContainerRotation == 0) {
-                    LogUtils.i("aaaa")
                     if (XConfig.getUnit()) {
                         topMargin = (10 + XConfig.getInt("TopMargin0", 4) / 100.0 * heightPixels).toInt()
                         leftMargin = (10 + XConfig.getInt("LeftMargin0") / 100.0 * widthPixels).roundToInt()
@@ -123,7 +123,6 @@ object Info : BaseHook() {
                         leftMargin = 10 + XConfig.getInt("LeftMargin0")
                     }
                 } else {
-                    LogUtils.i("bbbbb")
                     if (XConfig.getUnit()) {
                         topMargin = (10 + XConfig.getInt("TopMargin1", 5) / 100.0 * widthPixels).roundToInt()
                         leftMargin = (10 + XConfig.getInt("LeftMargin1") / 100.0 * heightPixels).roundToInt()
@@ -133,9 +132,6 @@ object Info : BaseHook() {
                     }
 
                 }
-                LogUtils.i(XConfig.getUnit())
-                LogUtils.i(topMargin)
-                LogUtils.i(leftMargin)
             }
         }
 
@@ -144,10 +140,7 @@ object Info : BaseHook() {
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeInAnim" }.hookAfter {
                 LogUtils.i(moduleRes.getString(R.string.VisibleView))
-                val params = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT
-                )
+                val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                 params.topMargin = topMargin
                 params.leftMargin = leftMargin
                 mLinearLayout.layoutParams = params
@@ -161,29 +154,17 @@ object Info : BaseHook() {
                 TextViewMaps.forEach { (name, view) ->
                     when (name) {
                         "MemoryView" -> {
-                            view.text = moduleRes.getString(R.string.MemoryView).format(
-                                memoryInfo.availMem.formatSize(),
-                                memoryInfo.totalMem.formatSize(),
-                                memoryInfo.percentValue
-                            )
+                            view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
                             Utils.viewColor(view, memoryInfo)
                         }
 
                         "ZarmView" -> {
-                            view.text = moduleRes.getString(R.string.ZarmView).format(
-                                swapInfo.availMem.formatSize(),
-                                swapInfo.totalMem.formatSize(),
-                                swapInfo.percentValue
-                            )
+                            view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
                             Utils.viewColor(view, swapInfo)
                         }
 
                         "StorageView" -> {
-                            view.text = moduleRes.getString(R.string.StorageView).format(
-                                storageInfo.availMem.formatSize(),
-                                storageInfo.totalMem.formatSize(),
-                                storageInfo.percentValue
-                            )
+                            view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
                             Utils.viewColor(view, storageInfo)
                         }
 
@@ -193,20 +174,15 @@ object Info : BaseHook() {
                         }
 
                         "RunningAppTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningAppTotalView)
-                                .format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
+                            view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
                         }
 
                         "RunningServiceTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format(
-                                (appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(
-                                    999
-                                ).size
-                            )
+                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
                         }
 
                     }
-                    view.width = view.paint.measureText(view.text.toString()).toInt() + 6
+                    view.width = view.paint.measureText(view.text.toString()).toInt() + 40
                 }
 
                 val animation = AlphaAnimation(0f, 1f)
