@@ -90,6 +90,11 @@ object Info : BaseHook() {
                 val mTxtMemoryInfo1 = it.thisObject.getObjectAs<TextView>("mTxtMemoryInfo1")
                 textColors = mTxtMemoryInfo1.textColors
 
+                if (TextViewMaps.size != 0) {
+                    TextViewMaps.forEach { its ->
+                        TextViewMaps.remove(its.key)
+                    }
+                }
                 TextViewMaps.apply {
                     TextViewList.forEach { name ->
                         val view = TextView(appContext).apply {
