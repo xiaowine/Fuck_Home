@@ -53,6 +53,7 @@
     <string name="MarginTips2">范围：-2000~2000</string>
     <string name="InputError">输入范围不正确！</string>
     <string name="Pad">解除平板模式限制(需要安装平板的桌面)</string>
+    <string name="UnlockHotseat">解锁底栏图标数量限制</string>
     <string name="Shortcuts">解除Shortcuts限制</string>
     <string name="UnlockGrids">解除桌面布局限制</string>
     <string name="HideStatusBar">后台界面隐藏状态栏</string>

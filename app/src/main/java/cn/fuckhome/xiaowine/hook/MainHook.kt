@@ -51,6 +51,9 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
                             if (XConfig.getBoolean("HideAppIcon")) {
                                 HideAppIcon.init()
                             }
+                            if (XConfig.getBoolean("UnlockHotseat")) {
+                                UnlockHotseatIcon.init()
+                            }
                             Info.init()
                             HideStatusBarWhenEnterResents.init()
                             isInit = false
