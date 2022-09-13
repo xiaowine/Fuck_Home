@@ -13,6 +13,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
@@ -22,13 +24,18 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import cn.fuckhome.xiaowine.R
 import cn.fuckhome.xiaowine.hook.BaseHook
-import cn.fuckhome.xiaowine.utils.*
+import cn.fuckhome.xiaowine.utils.FileUtils
+import cn.fuckhome.xiaowine.utils.LogUtils
+import cn.fuckhome.xiaowine.utils.MemoryUtils
+import cn.fuckhome.xiaowine.utils.Utils
 import cn.fuckhome.xiaowine.utils.Utils.XConfig
 import cn.fuckhome.xiaowine.utils.Utils.formatSize
+import cn.fuckhome.xiaowine.utils.Utils.isNull
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import com.github.kyuubiran.ezxhelper.init.InitFields.moduleRes
 import com.github.kyuubiran.ezxhelper.utils.*
 import java.io.File
+import java.util.*
 import kotlin.math.roundToInt
 
 
@@ -49,6 +56,9 @@ object Info : BaseHook() {
 
     private val moduleReceiver by lazy { ModuleReceiver() }
 
+    private var timer: Timer? = null
+    private var timerQueue: ArrayList<TimerTask> = arrayListOf()
+    private var infoTimer: TimerTask? = null
 
     override fun init() {
 //        初始化根控件
@@ -149,47 +159,8 @@ object Info : BaseHook() {
                 params.topMargin = topMargin
                 params.leftMargin = leftMargin
                 mLinearLayout.layoutParams = params
-
-                val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
-                val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
-                val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
-
-
                 LogUtils.i(moduleRes.getString(R.string.UpdateView))
-                TextViewMaps.forEach { (name, view) ->
-                    when (name) {
-                        "MemoryView" -> {
-                            view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
-                            Utils.viewColor(view, memoryInfo)
-                        }
-
-                        "ZarmView" -> {
-                            view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
-                            Utils.viewColor(view, swapInfo)
-                        }
-
-                        "StorageView" -> {
-                            view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
-                            Utils.viewColor(view, storageInfo)
-                        }
-
-                        "BootTime" -> {
-
-                            view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.BootTime.get())
-                        }
-
-                        "RunningAppTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
-                        }
-
-                        "RunningServiceTotal" -> {
-                            view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
-                        }
-
-                    }
-                    view.width = view.paint.measureText(view.text.toString()).toInt() + 40
-                }
-
+                startTimer()
                 val animation = AlphaAnimation(0f, 1f)
                 animation.duration = 300
                 animation.setAnimationListener(object : Animation.AnimationListener {
@@ -207,6 +178,7 @@ object Info : BaseHook() {
         Utils.catchNoClass {
             findMethod("com.miui.home.recents.views.RecentsContainer") { name == "startRecentsContainerFadeOutAnim" }.hookAfter {
                 LogUtils.i(moduleRes.getString(R.string.GoneView))
+                stopTimer()
                 if (mLinearLayout.visibility != View.GONE) {
                     val animation = AlphaAnimation(1f, 0f)
                     animation.duration = 300
@@ -220,7 +192,6 @@ object Info : BaseHook() {
                     mLinearLayout.startAnimation(animation)
                     mLinearLayout.visibility = View.GONE
                 }
-
             }
         }
 
@@ -228,6 +199,76 @@ object Info : BaseHook() {
 //        广播
         Utils.catchNoClass { appContext.unregisterReceiver(moduleReceiver) }
         appContext.registerReceiver(moduleReceiver, IntentFilter().apply { addAction("MIUIHOME_Server") })
+    }
+
+    fun updateInfoDate() {
+        val handler by lazy { Handler(Looper.getMainLooper()) }
+        handler.post {
+            val memoryInfo = MemoryUtils().getMemoryInfo(appContext)
+            val swapInfo = MemoryUtils().getPartitionInfo("SwapTotal", "SwapFree")
+            val storageInfo = MemoryUtils().getStorageInfo(Environment.getExternalStorageDirectory())
+            TextViewMaps.forEach { (name, view) ->
+                when (name) {
+                    "MemoryView" -> {
+                        view.text = moduleRes.getString(R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
+                        Utils.viewColor(view, memoryInfo)
+                    }
+
+                    "ZarmView" -> {
+                        view.text = moduleRes.getString(R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
+                        Utils.viewColor(view, swapInfo)
+                    }
+
+                    "StorageView" -> {
+                        view.text = moduleRes.getString(R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
+                        Utils.viewColor(view, storageInfo)
+                    }
+
+                    "BootTime" -> {
+
+                        view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.BootTime.get())
+                    }
+
+                    "RunningAppTotal" -> {
+                        view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
+                    }
+
+                    "RunningServiceTotal" -> {
+                        view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
+                    }
+
+                }
+                view.width = view.paint.measureText(view.text.toString()).toInt() + 40
+            }
+        }
+    }
+
+    private fun getInfoTimer(): TimerTask {
+        if (infoTimer == null) {
+            infoTimer = object : TimerTask() {
+                override fun run() {
+                    updateInfoDate()
+                }
+            }
+        }
+        return infoTimer as TimerTask
+    }
+
+
+    private fun startTimer() {
+        val timerTask = getInfoTimer()
+        timerQueue.forEach { task -> if (task == timerTask) return }
+        timerQueue.add(timerTask)
+        if (timer.isNull()) timer = Timer()
+        timer?.schedule(timerTask, 0, 1000L)
+    }
+
+    private fun stopTimer() {
+        timerQueue.forEach { task -> task.cancel() }
+        infoTimer = null
+        timerQueue = arrayListOf()
+        timer?.cancel()
+        timer = null
     }
 
 
