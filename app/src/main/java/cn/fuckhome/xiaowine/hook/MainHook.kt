@@ -54,6 +54,9 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
                             if (XConfig.getBoolean("UnlockHotseat")) {
                                 UnlockHotseatIcon.init()
                             }
+                            if (XConfig.getBoolean("ShortcutSmallWindow")) {
+                                ShortcutSmallWindow.init()
+                            }
                             Info.init()
                             HideStatusBarWhenEnterResents.init()
                             isInit = false
