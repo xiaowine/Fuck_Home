@@ -44,7 +44,7 @@ object Utils {
         return context.createDeviceProtectedStorageContext().getSharedPreferences(key, Context.MODE_WORLD_READABLE)
     }
 
-    object BootTime {
+    object Uptime {
         fun get(): String {
             val time = SystemClock.elapsedRealtime() / 1000
             var temp: Int

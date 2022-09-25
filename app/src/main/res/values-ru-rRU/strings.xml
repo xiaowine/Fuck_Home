@@ -10,7 +10,7 @@
     <string name="Backup">Сохранить настройки</string>
     <string name="BgCorners">Закругленные углы фона</string>
     <string name="BgCornersTips">0~100</string>
-    <string name="BootTime">Время работы</string>
+    <string name="Uptime">Время работы</string>
     <string name="BootTimeView">Время работы %s</string>
     <string name="BuildTime">Время компиляции</string>
     <string name="CENTER">По центру</string>

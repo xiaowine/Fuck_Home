@@ -10,7 +10,7 @@
     <string name="Backup">Save Settings</string>
     <string name="BgCorners">Rounded corners of the background</string>
     <string name="BgCornersTips">0~100</string>
-    <string name="BootTime">Uptime</string>
+    <string name="Uptime">Uptime</string>
     <string name="BootTimeView">Uptime %s</string>
     <string name="BuildTime">Compilation time</string>
     <string name="CENTER">Centered</string>

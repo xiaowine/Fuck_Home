@@ -41,7 +41,7 @@
     <string name="Memory">显示运存</string>
     <string name="Zarm">显示虚拟</string>
     <string name="Storage">显示储存</string>
-    <string name="BootTime">显示开机时长</string>
+    <string name="Uptime">显示开机时长</string>
     <string name="RunningAppTotal">显示运行软件总数</string>
     <string name="RunningServiceTotal">显示运行服务总数</string>
     <string name="warning">低于20%警告</string>

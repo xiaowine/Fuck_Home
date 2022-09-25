@@ -83,7 +83,7 @@ object Info : BaseHook() {
                 }
 
                 mView.addView(mLinearLayout)
-                listOf("MemoryView", "ZarmView", "StorageView", "BootTime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
+                listOf("MemoryView", "ZarmView", "StorageView", "Uptime", "RunningAppTotal", "RunningServiceTotal").forEach { s ->
                     if (XConfig.getBoolean(s)) {
                         TextViewList.add(s)
                     }
@@ -232,10 +232,10 @@ object Info : BaseHook() {
                         Utils.viewColor(view, storageInfo)
                     }
 
-                    "BootTime" -> {
+                    "Uptime" -> {
 
                         view.text = moduleRes.getString(R.string.BootTimeView)
-                            .format(Utils.BootTime.get())
+                            .format(Utils.Uptime.get())
                     }
 
                     "RunningAppTotal" -> {

@@ -92,11 +92,10 @@ class SettingsActivity : MIUIActivity() {
                 Text()
             }
             register("AddInformation", getString(R.string.AddInformation), false) {
-
                 TextS(textId = R.string.Memory, key = "MemoryView")
                 TextS(textId = R.string.Zarm, key = "ZarmView")
                 TextS(textId = R.string.Storage, key = "StorageView")
-                TextS(textId = R.string.BootTime, key = "BootTime")
+                TextS(textId = R.string.Uptime, key = "Uptime")
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
