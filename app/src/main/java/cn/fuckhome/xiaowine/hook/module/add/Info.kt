@@ -34,9 +34,11 @@ import cn.fuckhome.xiaowine.utils.Utils.isNull
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import com.github.kyuubiran.ezxhelper.init.InitFields.moduleRes
 import com.github.kyuubiran.ezxhelper.utils.*
+import com.jaredrummler.ktsh.Shell
 import java.io.File
 import java.util.*
 import kotlin.math.roundToInt
+import kotlin.system.exitProcess
 
 
 @SuppressLint("StaticFieldLeak")
@@ -104,8 +106,12 @@ object Info : BaseHook() {
                 textColors = mTxtMemoryInfo1.textColors
 
                 if (TextViewMaps.size != 0) {
-                    TextViewMaps.forEach { its ->
-                        TextViewMaps.remove(its.key)
+                    try {
+                        TextViewMaps.forEach { its ->
+                            TextViewMaps.remove(its.key)
+                        }
+                    } catch (_: ConcurrentModificationException) {
+                        exitProcess(0);
                     }
                 }
                 TextViewMaps.apply {
