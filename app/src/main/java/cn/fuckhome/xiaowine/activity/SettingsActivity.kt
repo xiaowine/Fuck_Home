@@ -99,6 +99,7 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.RunningAppTotal, key = "RunningAppTotal")
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
+                TextS(textId = R.string.CleanMode, key = "CleanMode")
 
             }
             register("AddInformationStyle", getString(R.string.AddInformationStyle), false) {

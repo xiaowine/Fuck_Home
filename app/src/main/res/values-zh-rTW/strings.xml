@@ -46,6 +46,7 @@
     <string name="RunningAppTotal">顯示運行軟體總數</string>
     <string name="RunningServiceTotal">顯示運行服務總數</string>
     <string name="warning">低於 20% 警告</string>
+    <string name="CleanMode">簡潔模式</string>
     <string name="TopMargin0">豎屏上邊距</string>
     <string name="LeftMargin0">豎屏左邊距</string>
     <string name="TopMargin1">橫屏上邊距</string>
@@ -81,8 +82,11 @@
     <string name="SmallWindow">小窗</string>
     <string name="ShortcutSmallWindow">快捷菜單添加小窗</string>
     <string name="MemoryView">運行記憶體 %s | %s 剩餘 %s%%</string>
+    <string name="MemoryView2">%s | %s</string>
     <string name="ZarmView">虛擬運行記憶體 %s | %s 剩餘 %s%%</string>
+    <string name="ZarmView2">%s | %s</string>
     <string name="StorageView">存儲空間 %s | %s 剩餘 %s%%</string>
+    <string name="StorageView2">%s | %s</string>
     <string name="BootTimeView">目前開機時長 %s</string>
     <string name="RunningAppTotalView">正在運行的應用總數 %s</string>
     <string name="RunningServiceTotalView">正在運行的服務總數 %s</string>

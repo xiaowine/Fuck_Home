@@ -47,6 +47,7 @@
     <string name="MarginTips2">Range：-2000~2000</string>
     <string name="Memory">Display RAM</string>
     <string name="MemoryView">RAM %s | %s | %s%%</string>
+    <string name="MemoryView2">%s | %s</string>
     <string name="Menu">Menu</string>
     <string name="ModulePackName">Module package name</string>
     <string name="ModuleVersion">Module version</string>
@@ -74,6 +75,7 @@ This module only supports the latest version of LSPosed</string>
     <string name="SmallWindow">Small window</string>
     <string name="Storage">Display ROM</string>
     <string name="StorageView">ROM %s | %s | %s%%</string>
+    <string name="StorageView2">%s | %s</string>
     <string name="ThkListTips">List of thanks</string>
     <string name="Tips">Hint</string>
     <string name="TopMargin0">Indentation at the top of the screen when the screen is vertical</string>
@@ -86,5 +88,7 @@ This module only supports the latest version of LSPosed</string>
     <string name="XposedDesc">Change the RAM information in the recent MIUI desktop menu to the real value and add some information</string>
     <string name="Zarm">Display zRAM</string>
     <string name="ZarmView">zRAM %s | %s | %s%%</string>
+    <string name="ZarmView2">%s | %s</string>
     <string name="warning">Warning if the remaining memory is less than 20%</string>
+    <string name="CleanMode">Clean mode</string>
 </resources>

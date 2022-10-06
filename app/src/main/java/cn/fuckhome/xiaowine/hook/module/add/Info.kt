@@ -34,7 +34,6 @@ import cn.fuckhome.xiaowine.utils.Utils.isNull
 import com.github.kyuubiran.ezxhelper.init.InitFields.appContext
 import com.github.kyuubiran.ezxhelper.init.InitFields.moduleRes
 import com.github.kyuubiran.ezxhelper.utils.*
-import com.jaredrummler.ktsh.Shell
 import java.io.File
 import java.util.*
 import kotlin.math.roundToInt
@@ -78,8 +77,7 @@ object Info : BaseHook() {
                     val gd = GradientDrawable()
                     gd.setColor(Color.parseColor(XConfig.getBgColor()))
 //                    gd.setColor(Color.BLUE)
-                    gd.cornerRadius = XConfig.getBgCorners()
-                        .toFloat()
+                    gd.cornerRadius = XConfig.getBgCorners().toFloat()
                     gd.setStroke(width, Color.BLACK)
                     background = gd
                 }
@@ -111,7 +109,7 @@ object Info : BaseHook() {
                             TextViewMaps.remove(its.key)
                         }
                     } catch (_: ConcurrentModificationException) {
-                        exitProcess(0);
+                        exitProcess(0)
                     }
                 }
                 TextViewMaps.apply {
@@ -221,42 +219,35 @@ object Info : BaseHook() {
             TextViewMaps.forEach { (name, view) ->
                 when (name) {
                     "MemoryView" -> {
-                        view.text = moduleRes.getString(R.string.MemoryView)
-                            .format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
+                        view.text = moduleRes.getString(if (XConfig.getBoolean("CleanMode")) R.string.MemoryView2 else R.string.MemoryView).format(memoryInfo.availMem.formatSize(), memoryInfo.totalMem.formatSize(), memoryInfo.percentValue)
                         Utils.viewColor(view, memoryInfo)
                     }
 
                     "ZarmView" -> {
-                        view.text = moduleRes.getString(R.string.ZarmView)
-                            .format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
+                        view.text = moduleRes.getString(if (XConfig.getBoolean("CleanMode")) R.string.ZarmView2 else R.string.ZarmView).format(swapInfo.availMem.formatSize(), swapInfo.totalMem.formatSize(), swapInfo.percentValue)
                         Utils.viewColor(view, swapInfo)
                     }
 
                     "StorageView" -> {
-                        view.text = moduleRes.getString(R.string.StorageView)
-                            .format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
+                        view.text = moduleRes.getString(if (XConfig.getBoolean("CleanMode")) R.string.StorageView2 else R.string.StorageView).format(storageInfo.availMem.formatSize(), storageInfo.totalMem.formatSize(), storageInfo.percentValue)
                         Utils.viewColor(view, storageInfo)
                     }
 
                     "Uptime" -> {
 
-                        view.text = moduleRes.getString(R.string.BootTimeView)
-                            .format(Utils.Uptime.get())
+                        view.text = moduleRes.getString(R.string.BootTimeView).format(Utils.Uptime.get())
                     }
 
                     "RunningAppTotal" -> {
-                        view.text = moduleRes.getString(R.string.RunningAppTotalView)
-                            .format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
+                        view.text = moduleRes.getString(R.string.RunningAppTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).runningAppProcesses.size)
                     }
 
                     "RunningServiceTotal" -> {
-                        view.text = moduleRes.getString(R.string.RunningServiceTotalView)
-                            .format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
+                        view.text = moduleRes.getString(R.string.RunningServiceTotalView).format((appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(999).size)
                     }
 
                 }
-                view.width = view.paint.measureText(view.text.toString())
-                    .toInt() + 40
+                view.width = view.paint.measureText(view.text.toString()).toInt() + 40
             }
         }
     }

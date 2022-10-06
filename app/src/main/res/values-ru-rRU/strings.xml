@@ -47,6 +47,7 @@
     <string name="MarginTips2">Диапазон：-2000~2000</string>
     <string name="Memory">Отображать RAM</string>
     <string name="MemoryView">RAM %s | %s | %s%%</string>
+    <string name="MemoryView2">%s | %s</string>
     <string name="Menu">Меню</string>
     <string name="ModulePackName">Имя пакета модуля</string>
     <string name="ModuleVersion">Версия модуля</string>
@@ -74,6 +75,7 @@
     <string name="SmallWindow">Маленькое окно</string>
     <string name="Storage">Отображать ROM</string>
     <string name="StorageView">ROM %s | %s | %s%%</string>
+    <string name="StorageView2">%s | %s</string>
     <string name="ThkListTips">Список благодарностей</string>
     <string name="Tips">Подсказка</string>
     <string name="TopMargin0">Отступ сверху экрана при вертикальном экране</string>
@@ -86,5 +88,7 @@
     <string name="XposedDesc">Измените сведения о RAM в меню недавних рабочего стола MIUI на реальное значение и добавление некоторой информации</string>
     <string name="Zarm">Отображать zRAM</string>
     <string name="ZarmView">zRAM %s | %s | %s%%</string>
+    <string name="ZarmView2">%s | %s</string>
     <string name="warning">Предупреждение при остатке памяти менее 20%</string>
+    <string name="CleanMode">Чистый режим</string>
 </resources>
