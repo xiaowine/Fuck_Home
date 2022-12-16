@@ -91,4 +91,5 @@
     <string name="ZarmView2">%s | %s</string>
     <string name="warning">Предупреждение при остатке памяти менее 20%</string>
     <string name="CleanMode">Чистый режим</string>
+    <string name="HideSmallWindow">Удаление кнопки приложения виджета</string>
 </resources>

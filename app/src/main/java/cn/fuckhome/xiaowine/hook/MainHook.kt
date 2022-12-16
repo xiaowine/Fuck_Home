@@ -57,6 +57,9 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
                             if (XConfig.getBoolean("ShortcutSmallWindow")) {
                                 ShortcutSmallWindow.init()
                             }
+                            if (XConfig.getBoolean("HideSmallWindow")) {
+                                HideSmallWindow.init()
+                            }
                             Info.init()
                             HideStatusBarWhenEnterResents.init()
                             isInit = false

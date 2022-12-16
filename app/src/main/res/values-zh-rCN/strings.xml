@@ -89,4 +89,5 @@
     <string name="BootTimeView">已开机时长 %s</string>
     <string name="RunningAppTotalView">运行中应用总数 %s</string>
     <string name="RunningServiceTotalView">运行中服务总数 %s</string>
+    <string name="HideSmallWindow">移除小窗应用按钮</string>
 </resources>

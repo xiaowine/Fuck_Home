@@ -319,6 +319,7 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.HideStatusBar, key = "HideStatusBar")
                 TextS(textId = R.string.HideAppName, key = "HideAppName")
                 TextS(textId = R.string.HideAppIcon, key = "HideAppIcon")
+                TextS(textId = R.string.HideSmallWindow, key = "HideSmallWindow")
             }
         }
     }
