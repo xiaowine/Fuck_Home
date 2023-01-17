@@ -1,2 +1,1 @@
-# Ink_Hone
-A module for [EzXHelper](https://github.com/KyuubiRan/EzXHelper)
+### MIUI桌面增强模块
