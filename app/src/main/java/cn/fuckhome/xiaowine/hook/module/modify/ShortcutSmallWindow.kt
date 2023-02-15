@@ -35,9 +35,7 @@ object ShortcutSmallWindow : BaseHook() {
         }
         mShortcutMenuItem.hookAfterAllMethods("getShortTitle") {
             val appName = appContext.getString(appContext.resources.getIdentifier("system_shortcuts_more_operation", "string", "com.miui.home"))
-            LogUtils.i(appName)
             if (it.result == appName) {
-                LogUtils.i(moduleRes.getString(R.string.AppInfo))
                 it.result = moduleRes.getString(R.string.AppInfo)
             }
         }
