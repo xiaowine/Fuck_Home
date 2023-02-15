@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import cn.fuckhome.xiaowine.R
 import cn.fuckhome.xiaowine.hook.BaseHook
-import cn.fuckhome.xiaowine.utils.LogUtils
 import cn.fuckhome.xiaowine.utils.callMethod
 import cn.fuckhome.xiaowine.utils.callStaticMethod
 import cn.fuckhome.xiaowine.utils.findClass

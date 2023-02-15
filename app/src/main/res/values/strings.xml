@@ -93,4 +93,5 @@ This module only supports the latest version of LSPosed</string>
     <string name="warning">Warning if the remaining memory is less than 20%</string>
     <string name="CleanMode">Clean mode</string>
     <string name="HideSmallWindow">Remove the \"Floating windows\" button</string>
+    <string name="RemoveSmallWindowRestriction">Remove small window restriction</string>
 </resources>

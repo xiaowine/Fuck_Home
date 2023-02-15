@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="xposedscope">
-    <item>com.miui.home</item>
-    <item>com.mi.android.globallauncher</item>
+        <item>com.miui.home</item>
+        <item>com.mi.android.globallauncher</item>
+        <item>android</item>
+        <item>com.android.systemui</item>
     </string-array>
 </resources>

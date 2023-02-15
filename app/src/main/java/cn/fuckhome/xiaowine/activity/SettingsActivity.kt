@@ -320,6 +320,7 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.HideAppName, key = "HideAppName")
                 TextS(textId = R.string.HideAppIcon, key = "HideAppIcon")
                 TextS(textId = R.string.HideSmallWindow, key = "HideSmallWindow")
+                TextS(textId = R.string.RemoveSmallWindowRestriction, key = "RemoveSmallWindowRestriction")
             }
         }
     }
