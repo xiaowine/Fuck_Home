@@ -80,6 +80,7 @@
     <string name="GoneView">隱藏控制項</string>
     <string name="VisibleView">顯示控制項</string>
     <string name="SmallWindow">小窗</string>
+    <string name="AppInfo">資訊</string>
     <string name="ShortcutSmallWindow">快捷菜單添加小窗</string>
     <string name="MemoryView">運行記憶體 %s | %s 剩餘 %s%%</string>
     <string name="MemoryView2">%s | %s</string>

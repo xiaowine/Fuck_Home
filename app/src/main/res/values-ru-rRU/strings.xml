@@ -73,6 +73,7 @@
     <string name="ShortcutSmallWindow">Добавить небольшое окно в контекстное меню</string>
     <string name="Shortcuts">Удалить ограничения на ярлыки</string>
     <string name="SmallWindow">Маленькое окно</string>
+    <string name="AppInfo">Информация</string>
     <string name="Storage">Отображать ROM</string>
     <string name="StorageView">ROM %s | %s | %s%%</string>
     <string name="StorageView2">%s | %s</string>

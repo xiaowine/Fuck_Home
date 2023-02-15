@@ -4,4 +4,5 @@
     <color name="colorPrimary">#03A9F4</color>
     <color name="colorAccent">#0374A7</color>
     <color name="customIconColor">#FFFFFF</color>
+    <color name="small_windows">#BCBDBE</color>
 </resources>

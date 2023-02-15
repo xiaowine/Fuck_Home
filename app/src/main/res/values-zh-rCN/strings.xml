@@ -79,6 +79,7 @@
     <string name="GoneView">隐藏控件</string>
     <string name="VisibleView">显示控件</string>
     <string name="SmallWindow">小窗</string>
+    <string name="AppInfo">信息</string>
     <string name="ShortcutSmallWindow">快捷菜单添加小窗</string>
     <string name="MemoryView">运存 %s | %s 剩余 %s%%</string>
     <string name="MemoryView2">%s | %s</string>
