@@ -8,15 +8,15 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     val buildTime = System.currentTimeMillis()
     defaultConfig {
         applicationId = "cn.fuckhome.xiaowine"
         minSdk = 26
-        targetSdk = 32
-        versionCode = 10
-        versionName = "2.3.1"
+        targetSdk = 33
+        versionCode = 11
+        versionName = "2.3.2"
         aaptOptions.cruncherEnabled = false
         aaptOptions.useNewCruncher = false
         buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
