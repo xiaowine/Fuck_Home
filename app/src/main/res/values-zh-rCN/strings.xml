@@ -92,4 +92,5 @@
     <string name="RunningServiceTotalView">运行中服务总数 %s</string>
     <string name="HideSmallWindow">移除小窗应用按钮</string>
     <string name="RemoveSmallWindowRestriction">移除小窗打开限制</string>
+    <string name="UnlockNavType">解锁系统导航方式</string>
 </resources>

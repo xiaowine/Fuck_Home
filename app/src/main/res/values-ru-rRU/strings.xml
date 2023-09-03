@@ -94,4 +94,5 @@
     <string name="CleanMode">Чистый режим</string>
     <string name="HideSmallWindow">Удаление кнопки приложения виджета</string>
     <string name="RemoveSmallWindowRestriction">Снятие ограничения на открытие окна</string>
+    <string name="UnlockNavType">UnlockNavType</string>
 </resources>

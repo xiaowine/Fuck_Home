@@ -94,4 +94,5 @@ This module only supports the latest version of LSPosed</string>
     <string name="CleanMode">Clean mode</string>
     <string name="HideSmallWindow">Remove the \"Floating windows\" button</string>
     <string name="RemoveSmallWindowRestriction">Remove small window restriction</string>
+    <string name="UnlockNavType">UnlockNavType</string>
 </resources>

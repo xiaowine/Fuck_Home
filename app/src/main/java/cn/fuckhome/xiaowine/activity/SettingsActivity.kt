@@ -100,7 +100,6 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.RunningServiceTotal, key = "RunningServiceTotal")
                 TextS(textId = R.string.warning, key = "Warning")
                 TextS(textId = R.string.CleanMode, key = "CleanMode")
-
             }
             register("AddInformationStyle", getString(R.string.AddInformationStyle), false) {
                 TextA(textId = R.string.Color, onClickListener = {
@@ -321,6 +320,7 @@ class SettingsActivity : MIUIActivity() {
                 TextS(textId = R.string.HideAppIcon, key = "HideAppIcon")
                 TextS(textId = R.string.HideSmallWindow, key = "HideSmallWindow")
                 TextS(textId = R.string.RemoveSmallWindowRestriction, key = "RemoveSmallWindowRestriction")
+                TextS(textId = R.string.UnlockNavType, key = "UnlockNavType")
             }
         }
     }

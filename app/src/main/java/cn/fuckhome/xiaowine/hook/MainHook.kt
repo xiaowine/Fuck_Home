@@ -68,6 +68,9 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
                             if (XConfig.getBoolean("RemoveSmallWindowRestriction")) {
                                 RemoveSmallWindowRestriction2.init()
                             }
+                            if (XConfig.getBoolean("UnlockNavType")) {
+                                UnlockNavType.init()
+                            }
                             Info.init()
                             HideStatusBarWhenEnterResents.init()
                             isInit = false

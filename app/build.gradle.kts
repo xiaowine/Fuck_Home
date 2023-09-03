@@ -8,15 +8,15 @@ plugins {
 }
 
 android {
-    compileSdk = 33
-
+    compileSdk = 34
+    namespace = "cn.fuckhome.xiaowine"
     val buildTime = System.currentTimeMillis()
     defaultConfig {
         applicationId = "cn.fuckhome.xiaowine"
         minSdk = 26
-        targetSdk = 33
-        versionCode = 11
-        versionName = "2.3.2"
+        targetSdk = 34
+        versionCode = 12
+        versionName = "2.3.3"
         aaptOptions.cruncherEnabled = false
         aaptOptions.useNewCruncher = false
         buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
@@ -34,7 +34,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.majorVersion
+        jvmTarget = JavaVersion.VERSION_17.majorVersion
     }
     packagingOptions {
         resources {
@@ -49,6 +49,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     applicationVariants.all {
         outputs.all {
