@@ -1,8 +1,10 @@
 package cn.fuckhome.xiaowine.activity
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -350,12 +352,17 @@ class SettingsActivity : MIUIActivity() {
     }
 
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityOwnSP.activity = this
         if (!checkLSPosed()) isLoad = false
         super.onCreate(savedInstanceState)
         if (isLoad) {
-            registerReceiver(AppReceiver(), IntentFilter().apply { addAction("MIUIHOME_App_Server") })
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(AppReceiver(), IntentFilter().apply { addAction("MIUIHOME_App_Server") }, RECEIVER_NOT_EXPORTED)
+            }else{
+                registerReceiver(AppReceiver(), IntentFilter().apply { addAction("MIUIHOME_App_Server") })
+            }
             if (BuildConfig.DEBUG) {
                 config.setValue("MemoryView", true)
                 config.setValue("ZarmView", true)
@@ -369,7 +376,8 @@ class SettingsActivity : MIUIActivity() {
         return try {
             Utils.getSP(this, "Fuck_Home_Config")?.let { setSP(it) }
             true
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
+            e.printStackTrace()
             MIUIDialog(activity) {
                 setTitle(R.string.Tips)
                 setMessage(R.string.NotSupport)
