@@ -15,8 +15,8 @@ android {
         applicationId = "cn.fuckhome.xiaowine"
         minSdk = 26
         targetSdk = 34
-        versionCode = 12
-        versionName = "2.3.3"
+        versionCode = 13
+        versionName = "2.3.4"
         aaptOptions.cruncherEnabled = false
         aaptOptions.useNewCruncher = false
         buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
